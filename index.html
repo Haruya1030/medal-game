@@ -1,1096 +1,326 @@
-```html
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>メダルゲームセンター</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-*{box-sizing:border-box}
-body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#080808;
- color:#fff;
-}
-.wrap{
- width:min(95%,650px);
- margin:25px auto;
-}
-.card{
- background:#1c1c1c;
- border:1px solid #444;
- border-radius:18px;
- padding:20px;
- margin-bottom:18px;
- box-shadow:0 5px 20px #000;
-}
-h1,h2{text-align:center}
-input,button{
- width:100%;
- padding:14px;
- margin-top:10px;
- border-radius:10px;
- border:0;
- font-size:16px;
-}
-input{
- background:#303030;
- color:#fff;
-}
-button{
- background:#555;
- color:#fff;
- cursor:pointer;
-}
-button:hover{background:#777}
-.hidden{display:none}
-.medal{
- text-align:center;
- font-size:34px;
- margin:20px 0;
-}
-.admin{
- border:2px solid gold;
-}
-.user{
- background:#292929;
- padding:14px;
- border-radius:12px;
- margin-top:12px;
-}
-.msg{
- color:#ff7777;
- margin-top:10px;
-}
-.success{
- color:#7cff7c;
- margin-top:10px;
-}
-.game{
- background:#252525;
- padding:18px;
- border-radius:14px;
- margin-top:12px;
- text-align:center;
-}
-</style>
-</head>
-
-<body>
-
-<div class="wrap">
-
-<!-- =========================
-     ログイン
-========================= -->
-<div id="loginPage" class="card">
-
-<h1>🎮 メダルゲームセンター</h1>
-<h2>🔐 ログイン</h2>
-
-<input id="email"
- type="email"
- placeholder="メールアドレス">
-
-<input id="password"
- type="password"
- placeholder="パスワード">
-
-<button onclick="login()">
-ログイン
-</button>
-
-<button onclick="register()">
-新規登録
-</button>
-
-<div id="loginMessage" class="msg"></div>
-
-</div>
-
-
-<!-- =========================
-     メイン
-========================= -->
-<div id="mainPage" class="hidden">
-
-<div class="card">
-
-<h1>🎮 メダルゲームセンター</h1>
-
-<p id="welcome"></p>
-
-<div class="medal">
-🪙 <span id="medalCount">0</span> 枚
-</div>
-
-<div class="game">
-<h2>🦾 クレーンゲーム</h2>
-<button onclick="openCrane()">
-プレイ
-</button>
-</div>
-
-<div class="game">
-<h2>🪙 メダルプッシャー</h2>
-<button onclick="openPusher()">
-プレイ
-</button>
-</div>
-
-<div class="game">
-<h2>🎲 さいころボール</h2>
-<button onclick="openDice()">
-プレイ
-</button>
-</div>
-
-<div class="game">
-<h2>🛍️ ショップ</h2>
-<button onclick="openShop()">
-ショップを見る
-</button>
-</div>
-
-<div class="game">
-<h2>🎁 ギフトコード</h2>
-<button onclick="openGift()">
-コード入力
-</button>
-</div>
-
-<button onclick="logout()">
-🚪 ログアウト
-</button>
-
-</div>
-
-
-<!-- =========================
-     管理者
-========================= -->
-<div id="adminPage" class="card admin hidden">
-
-<h2>👑 管理者画面</h2>
-
-<p>管理者専用メニュー</p>
-
-<button onclick="loadUsers()">
-👤 アカウント管理
-</button>
-
-<button onclick="openAdminCrane()">
-🦾 クレーン台・景品管理
-</button>
-
-<button onclick="openAdminShop()">
-🛍️ ショップ商品管理
-</button>
-
-<button onclick="openAdminGift()">
-🎁 ギフトコード管理
-</button>
-
-<div id="userList"></div>
-
-</div>
-
-</div>
-
-
-<!-- =========================
-     クレーン
-========================= -->
-<div id="cranePage" class="card hidden">
-
-<h1>🦾 クレーンゲーム</h1>
-
-<div style="
-height:350px;
-background:#111;
-border:8px solid #555;
-border-radius:15px;
-position:relative;
-overflow:hidden;
-">
-
-<div id="crane"
-style="
-position:absolute;
-top:20px;
-left:45%;
-width:70px;
-height:70px;
-">
-
-<div style="
-width:8px;
-height:55px;
-background:#aaa;
-margin:auto;
-"></div>
-
-<div style="
-width:60px;
-height:15px;
-background:#bbb;
-border-radius:10px;
-"></div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-margin-top:0;
-">
-
-<div style="
-width:10px;
-height:35px;
-background:#aaa;
-transform:rotate(20deg);
-"></div>
-
-<div style="
-width:10px;
-height:35px;
-background:#aaa;
-transform:rotate(-20deg);
-"></div>
-
-</div>
-</div>
-
-<div style="
-position:absolute;
-bottom:25px;
-left:20%;
-width:60%;
-height:70px;
-background:#444;
-border-radius:15px;
-text-align:center;
-padding:20px;
-font-size:25px;
-">
-🎁 🎁 🎁 🎁 🎁
-</div>
-
-</div>
-
-<button onclick="moveCrane(-1)">
-⬅️ 左
-</button>
-
-<button onclick="moveCrane(1)">
-➡️ 右
-</button>
-
-<button onclick="grabPrize()">
-🦾 つかむ
-</button>
-
-<button onclick="closeGames()">
-戻る
-</button>
-
-<div id="craneMessage"></div>
-
-</div>
-
-
-<!-- =========================
-     プッシャー
-========================= -->
-<div id="pusherPage" class="card hidden">
-
-<h1>🪙 メダルプッシャー</h1>
-
-<div style="
-background:#333;
-height:300px;
-border-radius:15px;
-padding:20px;
-overflow:hidden;
-">
-
-<div id="pusherMedals"
-style="
-font-size:28px;
-line-height:45px;
-text-align:center;
-">
-🪙 🪙 🪙 🪙 🪙<br>
-🪙 🪙 🪙 🪙 🪙<br>
-🪙 🪙 🪙 🪙 🪙
-</div>
-
-</div>
-
-<button onclick="dropMedal()">
-🪙 メダルを投入
-</button>
-
-<button onclick="closeGames()">
-戻る
-</button>
-
-<div id="pusherMessage"></div>
-
-</div>
-
-
-<!-- =========================
-     さいころ
-========================= -->
-<div id="dicePage" class="card hidden">
-
-<h1>🎲 さいころボール</h1>
-
-<div style="
-height:280px;
-background:#222;
-border-radius:15px;
-padding:30px;
-text-align:center;
-">
-
-<div id="diceBall"
-style="
-font-size:80px;
-margin-top:70px;
-">
-⚪
-</div>
-
-</div>
-
-<button onclick="rollDice()">
-🎲 ボールを落とす
-</button>
-
-<button onclick="closeGames()">
-戻る
-</button>
-
-<div id="diceMessage"></div>
-
-</div>
-
-
-<!-- =========================
-     ショップ
-========================= -->
-<div id="shopPage" class="card hidden">
-
-<h1>🛍️ ショップ</h1>
-
-<div id="shopItems"></div>
-
-<button onclick="closeGames()">
-戻る
-</button>
-
-</div>
-
-
-<!-- =========================
-     ギフト
-========================= -->
-<div id="giftPage" class="card hidden">
-
-<h1>🎁 ギフトコード</h1>
-
-<input id="giftCode"
- placeholder="ギフトコード">
-
-<button onclick="useGiftCode()">
-コードを使用
-</button>
-
-<button onclick="closeGames()">
-戻る
-</button>
-
-<div id="giftMessage"></div>
-
-</div>
-
-</div>
-
-
-<script>
-
-/* =====================================
-   Supabase
-===================================== */
-
-const SUPABASE_URL=
-"https://kizcfsgfeurwlpwcfrzp.supabase.co";
-
-/*
- ↓ここだけ自分のPublishable keyに変更
-*/
-const SUPABASE_PUBLISHABLE_KEY=
-"sb_publishable_onwTGaCaOPH3LerDm0tXOA_KnjyS2hG";
-
-
-const supabaseClient=
-window.supabase.createClient(
- SUPABASE_URL,
- SUPABASE_PUBLISHABLE_KEY
-);
-
-
-/* =====================================
-   現在ユーザー
-===================================== */
-
-let currentUser=null;
-let currentProfile=null;
-
-
-/* =====================================
-   メッセージ
-===================================== */
-
-function loginMessage(text){
- document.getElementById(
-  "loginMessage"
- ).textContent=text;
-}
-
-
-/* =====================================
-   登録
-===================================== */
-
-async function register(){
-
- const email=
- document.getElementById("email").value.trim();
-
- const password=
- document.getElementById("password").value;
-
- if(!email||!password){
-  loginMessage(
-   "メールアドレスとパスワードを入力してください。"
+-- =========================================
+-- 管理者用 商品・ギフトコード・クレーン台RPC
+-- =========================================
+
+-- 管理者確認用
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+      and role = 'admin'
+      and coalesce(is_banned, false) = false
   );
-  return;
- }
-
- const {error}=
- await supabaseClient.auth.signUp({
-  email,
-  password
- });
-
- if(error){
-  loginMessage(error.message);
-  return;
- }
-
- loginMessage(
-  "登録しました。メール確認が必要な場合はメールを確認してください。"
- );
-}
-
-
-/* =====================================
-   ログイン
-===================================== */
-
-async function login(){
-
- const email=
- document.getElementById("email").value.trim();
-
- const password=
- document.getElementById("password").value;
-
- if(!email||!password){
-  loginMessage(
-   "メールアドレスとパスワードを入力してください。"
-  );
-  return;
- }
-
- const {data,error}=
- await supabaseClient.auth.signInWithPassword({
-  email,
-  password
- });
-
- if(error){
-  loginMessage(error.message);
-  return;
- }
-
- await loadProfile();
-}
-
-
-/* =====================================
-   プロフィール
-===================================== */
-
-async function loadProfile(){
-
- const {data,error}=
- await supabaseClient.auth.getUser();
-
- if(error||!data.user){
-  showLogin();
-  return;
- }
-
- currentUser=data.user;
-
- const result=
- await supabaseClient
- .from("profiles")
- .select(
-  "id,username,display_name,role,medals"
- )
- .eq("id",currentUser.id)
- .single();
-
- if(result.error){
-
-  alert(
-   "プロフィール取得エラー\n"+
-   result.error.message
-  );
-
-  return;
- }
-
- currentProfile=result.data;
-
- document
- .getElementById("loginPage")
- .classList.add("hidden");
-
- document
- .getElementById("mainPage")
- .classList.remove("hidden");
-
- document
- .getElementById("welcome")
- .textContent=
- "こんにちは、"+
- (
-  currentProfile.display_name||
-  currentProfile.username||
-  currentUser.email
- )+
- " さん";
-
- document
- .getElementById("medalCount")
- .textContent=
- currentProfile.medals;
-
- if(currentProfile.role==="admin"){
-
-  document
-  .getElementById("adminPage")
-  .classList.remove("hidden");
-
- }else{
-
-  document
-  .getElementById("adminPage")
-  .classList.add("hidden");
-
- }
-}
-
-
-/* =====================================
-   ユーザー一覧
-===================================== */
-
-async function loadUsers(){
-
- if(!currentProfile||
-    currentProfile.role!=="admin"){
-
-  alert("管理者権限がありません。");
-  return;
- }
-
- const {data,error}=
- await supabaseClient
- .from("profiles")
- .select(
-  "id,username,display_name,role,medals"
- )
- .order("created_at",{ascending:false});
-
- if(error){
-  alert(error.message);
-  return;
- }
-
- const list=
- document.getElementById("userList");
-
- list.innerHTML="<h3>👤 ユーザー一覧</h3>";
-
- data.forEach(user=>{
-
-  const div=
-  document.createElement("div");
-
-  div.className="user";
-
-  div.innerHTML=`
-
-   <strong>
-   ${escapeHtml(
-    user.display_name||
-    user.username||
-    "ユーザー"
-   )}
-   </strong>
-
-   <br>
-
-   🪙
-   <span id="medal-${user.id}">
-   ${user.medals}
-   </span> 枚
-
-   <br>
-
-   <small>
-   権限：${escapeHtml(user.role)}
-   </small>
-
-   <input
-    id="amount-${user.id}"
-    type="number"
-    min="1"
-    value="100"
-    placeholder="枚数">
-
-   <input
-    id="reason-${user.id}"
-    value="管理者によるメダル変更"
-    placeholder="理由">
-
-   <button
-    onclick="changeMedals('${user.id}',1)">
-    ➕ 増やす
-   </button>
-
-   <button
-    onclick="changeMedals('${user.id}',-1)">
-    ➖ 減らす
-   </button>
-  `;
-
-  list.appendChild(div);
- });
-}
-
-
-/* =====================================
-   メダル遠隔増減
-===================================== */
-
-async function changeMedals(
- userId,
- direction
-){
-
- const amount=
- Number(
-  document.getElementById(
-   "amount-"+userId
-  ).value
- );
-
- const reason=
- document.getElementById(
-  "reason-"+userId
- ).value.trim();
-
- if(!Number.isInteger(amount)||amount<=0){
-  alert("1以上の整数を入力してください。");
-  return;
- }
-
- const {data,error}=
- await supabaseClient.rpc(
-  "admin_change_medals",
-  {
-   target_user_id:userId,
-   medal_amount:direction*amount,
-   reason:
-    reason||
-    "管理者によるメダル変更"
-  }
- );
-
- if(error){
-  alert(
-   "変更できませんでした。\n"+
-   error.message
-  );
-  return;
- }
-
- document.getElementById(
-  "medal-"+userId
- ).textContent=data;
-
- if(
-  currentUser &&
-  userId===currentUser.id
- ){
-  document.getElementById(
-   "medalCount"
-  ).textContent=data;
- }
-
- alert(
-  "メダル変更完了！\n"+
-  "現在："+data+"枚"
- );
-}
-
-
-/* =====================================
-   クレーン
-===================================== */
-
-let craneX=45;
-
-function openCrane(){
-
- hideAllPages();
-
- document
- .getElementById("cranePage")
- .classList.remove("hidden");
-}
-
-function moveCrane(direction){
-
- craneX+=direction*5;
-
- if(craneX<5) craneX=5;
- if(craneX>90) craneX=90;
-
- document
- .getElementById("crane")
- .style.left=
- craneX+"%";
-}
-
-function grabPrize(){
-
- const message=
- document.getElementById(
-  "craneMessage"
- );
-
- message.textContent=
- "🦾 アーム下降……";
-
- setTimeout(()=>{
-  message.textContent=
-   "🤏 景品をつかんでいます……";
- },700);
-
- setTimeout(()=>{
-  const success=
-   Math.random()<0.35;
-
-  if(success){
-
-   message.textContent=
-    "🎉 景品ゲット！";
-
-  }else{
-
-   message.textContent=
-    "ポロッ……😵 景品が落ちました。";
-
-  }
-
- },1800);
-}
-
-
-/* =====================================
-   プッシャー
-===================================== */
-
-function openPusher(){
-
- hideAllPages();
-
- document
- .getElementById("pusherPage")
- .classList.remove("hidden");
-}
-
-function dropMedal(){
-
- if(
-  !currentProfile||
-  currentProfile.medals<=0
- ){
-  alert("メダルがありません。");
-  return;
- }
-
- document
- .getElementById("pusherMessage")
- .textContent=
- "🪙 メダルを投入しました！";
-
- /*
-   実際のメダル減算は次の段階で
-   Supabase RPCに接続します。
- */
-}
-
-
-/* =====================================
-   さいころ
-===================================== */
-
-function openDice(){
-
- hideAllPages();
-
- document
- .getElementById("dicePage")
- .classList.remove("hidden");
-}
-
-function rollDice(){
-
- const ball=
- document.getElementById("diceBall");
-
- const message=
- document.getElementById("diceMessage");
-
- ball.textContent="🔵";
-
- message.textContent=
- "ボールがチェッカーへ……";
-
- setTimeout(()=>{
-
-  const number=
-   Math.floor(Math.random()*6)+1;
-
-  ball.textContent="🎲";
-
-  message.textContent=
-   "🎲 出た目："+number;
-
- },1500);
-}
-
-
-/* =====================================
-   ショップ
-===================================== */
-
-function openShop(){
-
- hideAllPages();
-
- document
- .getElementById("shopPage")
- .classList.remove("hidden");
-
- document
- .getElementById("shopItems")
- .innerHTML=`
-  <div class="game">
-   <h2>🎁 テスト景品</h2>
-   <p>1000メダル</p>
-   <button>
-    購入
-   </button>
-  </div>
- `;
-}
-
-
-/* =====================================
-   ギフトコード
-===================================== */
-
-function openGift(){
-
- hideAllPages();
-
- document
- .getElementById("giftPage")
- .classList.remove("hidden");
-}
-
-function useGiftCode(){
-
- const code=
- document.getElementById(
-  "giftCode"
- ).value.trim();
-
- if(!code){
-  alert("コードを入力してください。");
-  return;
- }
-
- document
- .getElementById("giftMessage")
- .textContent=
- "🎁 ギフトコード機能はSupabase接続後に有効になります。";
-}
-
-
-/* =====================================
-   管理者メニュー
-===================================== */
-
-function openAdminCrane(){
-
- alert(
-  "🦾 クレーン台管理\n\n"+
-  "景品変更・在庫・アームパワー設定を"+
-  "次の段階でSupabaseに接続します。"
- );
-}
-
-function openAdminShop(){
-
- alert(
-  "🛍️ ショップ商品管理\n\n"+
-  "管理者が商品を作成・編集できる画面を"+
-  "次の段階で追加します。"
- );
-}
-
-function openAdminGift(){
-
- alert(
-  "🎁 ギフトコード管理\n\n"+
-  "管理者がコード・メダル数・期限を"+
-  "設定できる画面を追加します。"
- );
-}
-
-
-/* =====================================
-   戻る
-===================================== */
-
-function closeGames(){
-
- hideAllPages();
-
- document
- .getElementById("mainPage")
- .classList.remove("hidden");
-
-}
-
-
-/* =====================================
-   全画面非表示
-===================================== */
-
-function hideAllPages(){
-
- [
-  "mainPage",
-  "cranePage",
-  "pusherPage",
-  "dicePage",
-  "shopPage",
-  "giftPage"
- ].forEach(id=>{
-  document
-  .getElementById(id)
-  .classList.add("hidden");
- });
-}
-
-
-/* =====================================
-   ログアウト
-===================================== */
-
-async function logout(){
-
- await supabaseClient.auth.signOut();
-
- currentUser=null;
- currentProfile=null;
-
- hideAllPages();
- showLogin();
-}
-
-function showLogin(){
-
- document
- .getElementById("loginPage")
- .classList.remove("hidden");
-}
-
-
-/* =====================================
-   HTMLエスケープ
-===================================== */
-
-function escapeHtml(value){
-
- return String(value)
-  .replaceAll("&","&amp;")
-  .replaceAll("<","&lt;")
-  .replaceAll(">","&gt;")
-  .replaceAll('"',"&quot;")
-  .replaceAll("'","&#039;");
-}
-
-
-/* =====================================
-   起動
-===================================== */
-
-async function startApp(){
-
- const {data}=
- await supabaseClient.auth.getSession();
-
- if(data.session){
-
-  await loadProfile();
-
- }else{
-
-  showLogin();
-
- }
-}
-
-startApp();
-
-</script>
-
-</body>
-</html>
-```
+$$;
+
+grant execute on function public.is_admin() to authenticated;
+
+
+-- =========================================
+-- 商品作成
+-- =========================================
+create or replace function public.admin_create_product(
+  product_name text,
+  product_description text,
+  product_price integer,
+  product_stock integer,
+  product_image_url text default null
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  new_id uuid;
+begin
+  if not public.is_admin() then
+    raise exception '管理者権限がありません';
+  end if;
+
+  if product_name is null or trim(product_name) = '' then
+    raise exception '商品名を入力してください';
+  end if;
+
+  if product_price < 0 or product_stock < 0 then
+    raise exception '価格・在庫は0以上にしてください';
+  end if;
+
+  insert into public.shop_products (
+    name,
+    description,
+    price_medals,
+    stock,
+    image_url,
+    enabled
+  )
+  values (
+    trim(product_name),
+    product_description,
+    product_price,
+    product_stock,
+    product_image_url,
+    true
+  )
+  returning id into new_id;
+
+  return new_id;
+end;
+$$;
+
+grant execute on function public.admin_create_product(
+  text,text,integer,integer,text
+) to authenticated;
+
+
+-- =========================================
+-- 商品更新
+-- =========================================
+create or replace function public.admin_update_product(
+  target_product_id uuid,
+  product_name text,
+  product_description text,
+  product_price integer,
+  product_stock integer,
+  product_image_url text,
+  product_enabled boolean
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin() then
+    raise exception '管理者権限がありません';
+  end if;
+
+  update public.shop_products
+  set
+    name = trim(product_name),
+    description = product_description,
+    price_medals = product_price,
+    stock = product_stock,
+    image_url = product_image_url,
+    enabled = product_enabled
+  where id = target_product_id;
+
+  if not found then
+    raise exception '商品が見つかりません';
+  end if;
+
+  return true;
+end;
+$$;
+
+grant execute on function public.admin_update_product(
+  uuid,text,text,integer,integer,text,boolean
+) to authenticated;
+
+
+-- =========================================
+-- ギフトコード作成
+-- =========================================
+create or replace function public.admin_create_gift_code(
+  gift_code text,
+  gift_medals integer,
+  gift_max_uses integer,
+  gift_expires_at timestamptz default null
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  new_id uuid;
+begin
+  if not public.is_admin() then
+    raise exception '管理者権限がありません';
+  end if;
+
+  if gift_code is null or trim(gift_code) = '' then
+    raise exception 'ギフトコードを入力してください';
+  end if;
+
+  if gift_medals <= 0 then
+    raise exception 'メダル数は1以上にしてください';
+  end if;
+
+  if gift_max_uses <= 0 then
+    raise exception '使用回数は1以上にしてください';
+  end if;
+
+  insert into public.gift_codes (
+    code,
+    medal_amount,
+    max_uses,
+    used_count,
+    expires_at,
+    enabled
+  )
+  values (
+    upper(trim(gift_code)),
+    gift_medals,
+    gift_max_uses,
+    0,
+    gift_expires_at,
+    true
+  )
+  returning id into new_id;
+
+  return new_id;
+end;
+$$;
+
+grant execute on function public.admin_create_gift_code(
+  text,integer,integer,timestamptz
+) to authenticated;
+
+
+-- =========================================
+-- ギフトコード有効・無効
+-- =========================================
+create or replace function public.admin_update_gift_code(
+  target_gift_id uuid,
+  gift_enabled boolean
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin() then
+    raise exception '管理者権限がありません';
+  end if;
+
+  update public.gift_codes
+  set enabled = gift_enabled
+  where id = target_gift_id;
+
+  if not found then
+    raise exception 'ギフトコードが見つかりません';
+  end if;
+
+  return true;
+end;
+$$;
+
+grant execute on function public.admin_update_gift_code(
+  uuid,boolean
+) to authenticated;
+
+
+-- =========================================
+-- クレーンゲーム台作成
+-- =========================================
+create or replace function public.admin_create_crane_machine(
+  machine_name text,
+  machine_prize_name text,
+  machine_arm_power integer,
+  machine_stock integer
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  new_id uuid;
+begin
+  if not public.is_admin() then
+    raise exception '管理者権限がありません';
+  end if;
+
+  if machine_name is null or trim(machine_name) = '' then
+    raise exception '台名を入力してください';
+  end if;
+
+  if machine_prize_name is null or trim(machine_prize_name) = '' then
+    raise exception '景品名を入力してください';
+  end if;
+
+  if machine_arm_power < 0 or machine_arm_power > 100 then
+    raise exception 'アームパワーは0〜100で設定してください';
+  end if;
+
+  if machine_stock < 0 then
+    raise exception '在庫は0以上にしてください';
+  end if;
+
+  insert into public.crane_machines (
+    name,
+    prize_name,
+    arm_power,
+    stock,
+    enabled
+  )
+  values (
+    trim(machine_name),
+    trim(machine_prize_name),
+    machine_arm_power,
+    machine_stock,
+    true
+  )
+  returning id into new_id;
+
+  return new_id;
+end;
+$$;
+
+grant execute on function public.admin_create_crane_machine(
+  text,text,integer,integer
+) to authenticated;
+
+
+-- =========================================
+-- クレーンゲーム台更新
+-- =========================================
+create or replace function public.admin_update_crane_machine(
+  target_machine_id uuid,
+  machine_name text,
+  machine_prize_name text,
+  machine_arm_power integer,
+  machine_stock integer,
+  machine_enabled boolean
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin() then
+    raise exception '管理者権限がありません';
+  end if;
+
+  if machine_arm_power < 0 or machine_arm_power > 100 then
+    raise exception 'アームパワーは0〜100で設定してください';
+  end if;
+
+  update public.crane_machines
+  set
+    name = trim(machine_name),
+    prize_name = trim(machine_prize_name),
+    arm_power = machine_arm_power,
+    stock = machine_stock,
+    enabled = machine_enabled
+  where id = target_machine_id;
+
+  if not found then
+    raise exception 'クレーンゲーム台が見つかりません';
+  end if;
+
+  return true;
+end;
+$$;
+
+grant execute on function public.admin_update_crane_machine(
+  uuid,text,text,integer,integer,boolean
+) to authenticated;
