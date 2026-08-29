@@ -1,9 +1,24 @@
 {
   "name": "メダルゲームセンター",
   "short_name": "メダルゲーム",
-  "start_url": "./",
+  "description": "クレーンゲームとメダルプッシャーを楽しめるゲームセンター",
+  "start_url": "/medal-game/",
+  "scope": "/medal-game/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#080b10",
   "theme_color": "#111722",
-  "lang": "ja"
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "/medal-game/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/medal-game/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
