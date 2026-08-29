@@ -18,53 +18,17 @@ body{
   color:#fff;
 }
 
-header{
-  background:#111722;
-  padding:18px;
-  border-bottom:1px solid #283141;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-header h1{
-  margin:0;
-  font-size:22px;
-}
-
-.container{
-  width:min(1100px,94%);
-  margin:25px auto;
-}
-
-.card{
-  background:#111722;
-  border:1px solid #293344;
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:20px;
-}
-
-.hidden{
-  display:none!important;
-}
-
-input,select,button{
-  width:100%;
-  padding:13px;
-  margin-top:8px;
-  margin-bottom:12px;
-  border-radius:10px;
-  border:1px solid #39465b;
-  background:#0b1018;
-  color:#fff;
-  font-size:15px;
+button,input,select{
+  font:inherit;
 }
 
 button{
-  background:#2478ff;
   border:0;
+  border-radius:10px;
+  padding:12px 16px;
   cursor:pointer;
+  background:#247cff;
+  color:#fff;
   font-weight:bold;
 }
 
@@ -72,374 +36,1210 @@ button:hover{
   opacity:.85;
 }
 
-button.red{
-  background:#d9363e;
-}
-
-button.green{
-  background:#1fa463;
-}
-
 button.gray{
   background:#3a4352;
 }
 
-.medal{
-  font-size:42px;
+button.green{
+  background:#1d9b61;
+}
+
+button.red{
+  background:#d83b3b;
+}
+
+input,select{
+  width:100%;
+  padding:12px;
+  border:1px solid #39465b;
+  border-radius:10px;
+  background:#0c1119;
+  color:#fff;
+}
+
+label{
+  display:block;
+  margin-bottom:6px;
+  color:#b7c1cf;
+}
+
+.field{
+  margin-bottom:14px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.container{
+  width:min(1100px,94%);
+  margin:25px auto;
+}
+
+header{
+  background:#111722;
+  border-bottom:1px solid #293344;
+  padding:16px;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.header-inner{
+  width:min(1100px,94%);
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.logo{
+  font-size:21px;
   font-weight:bold;
-  text-align:center;
+}
+
+.balance{
+  background:#18202c;
+  border-radius:12px;
+  padding:10px 14px;
+}
+
+.medal{
+  color:#ffd34d;
+  font-weight:bold;
+}
+
+.card{
+  background:#111722;
+  border:1px solid #293344;
+  border-radius:16px;
   padding:20px;
+  margin-bottom:18px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:15px;
 }
 
 .status{
-  padding:12px;
-  border-radius:10px;
   background:#182231;
-  margin-bottom:15px;
+  border-radius:10px;
+  padding:11px;
+  margin:10px 0;
+}
+
+.small{
+  color:#9ca8b8;
+  font-size:13px;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+
+.tabs button{
+  width:auto;
+}
+
+.tabs button.active{
+  background:#fff;
+  color:#111;
 }
 
 .user{
   border:1px solid #303b4e;
   border-radius:12px;
-  padding:15px;
+  padding:14px;
   margin-top:10px;
 }
 
-.user strong{
-  font-size:17px;
+.product{
+  border:1px solid #303b4e;
+  border-radius:12px;
+  padding:14px;
+  margin-top:10px;
+}
+
+.product img{
+  width:100%;
+  max-height:180px;
+  object-fit:contain;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+.auth{
+  max-width:430px;
+  margin:60px auto;
+}
+
+.game{
+  min-height:380px;
+  background:#090d13;
+  border:2px solid #394556;
+  border-radius:16px;
+  position:relative;
+  overflow:hidden;
+}
+
+.crane-machine{
+  height:360px;
+  position:relative;
+  background:linear-gradient(#172231,#0b1017);
+}
+
+.crane-glass{
+  position:absolute;
+  inset:12px;
+  border:2px solid #566273;
+  border-radius:10px;
+}
+
+.crane-rail{
+  position:absolute;
+  left:30px;
+  right:30px;
+  top:30px;
+  height:10px;
+  background:#737e8b;
+  border-radius:10px;
+}
+
+.claw{
+  position:absolute;
+  top:38px;
+  left:50%;
+  width:80px;
+  height:120px;
+  transform:translateX(-50%);
+  transition:left .7s ease,top .8s ease;
+  z-index:5;
+}
+
+.cable{
+  position:absolute;
+  left:38px;
+  top:0;
+  width:5px;
+  height:70px;
+  background:#c1c7cd;
+}
+
+.claw-head{
+  position:absolute;
+  top:64px;
+  left:22px;
+  width:36px;
+  height:25px;
+  border-radius:50% 50% 25% 25%;
+  background:#b9c1c9;
+}
+
+.arm{
+  position:absolute;
+  top:75px;
+  width:7px;
+  height:45px;
+  background:#aeb7c0;
+  border-radius:8px;
+  transition:transform .25s;
+}
+
+.arm.left{
+  left:23px;
+  transform:rotate(25deg);
+}
+
+.arm.right{
+  right:23px;
+  transform:rotate(-25deg);
+}
+
+.claw.open .arm.left{
+  transform:rotate(48deg);
+}
+
+.claw.open .arm.right{
+  transform:rotate(-48deg);
+}
+
+.prize{
+  position:absolute;
+  left:45%;
+  bottom:70px;
+  width:55px;
+  height:55px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#ffd65c,#e88b19);
+  box-shadow:0 5px 15px #000;
+  transition:all .5s ease;
+}
+
+.prize.lift{
+  bottom:175px;
+  left:calc(50% - 27px);
+}
+
+.prize.drop{
+  bottom:8px;
+  transform:rotate(35deg);
+}
+
+.outlet{
+  position:absolute;
+  bottom:0;
+  left:34%;
+  width:32%;
+  height:48px;
+  background:#252e3a;
+  border-top:4px solid #667383;
+}
+
+.pusher{
+  height:360px;
+  position:relative;
+  background:linear-gradient(#15202b,#080b10);
+}
+
+.pusher-table{
+  position:absolute;
+  left:7%;
+  right:7%;
+  top:55px;
+  height:220px;
+  border:4px solid #536172;
+  border-radius:12px;
+  background:#222d39;
+  overflow:hidden;
+}
+
+.pusher-floor{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:70px;
+  background:#394653;
+}
+
+.push-board{
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:30px;
+  height:22px;
+  background:#a5adb6;
+  border-radius:8px;
+  transition:transform .35s;
+}
+
+.coin{
+  position:absolute;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  background:#f2c94c;
+  border:2px solid #fff0a5;
+}
+
+.ball{
+  position:absolute;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#f1f1f1;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  border:2px solid #555;
+}
+
+.login-title{
+  text-align:center;
 }
 
 .admin-title{
   color:#ffd34d;
 }
 
-.product{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  align-items:center;
-  border-bottom:1px solid #303b4e;
-  padding:12px 0;
-}
-
-.product:last-child{
-  border-bottom:0;
-}
-
-.small{
-  color:#9ba8ba;
-  font-size:13px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-}
-
 @media(max-width:600px){
-  header h1{font-size:18px}
-  .card{padding:15px}
-  .medal{font-size:32px}
+
+  .header-inner{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .container{
+    width:96%;
+  }
+
+  .card{
+    padding:15px;
+  }
+
+  .logo{
+    font-size:18px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🎰 メダルゲームセンター</h1>
+<header id="header" class="hidden">
+  <div class="header-inner">
+
+    <div class="logo">
+      🎮 メダルゲームセンター
+    </div>
+
+    <div class="balance">
+      🪙
+      <span id="headerMedals" class="medal">0</span>
+      枚
+    </div>
+
+  </div>
 </header>
+
 
 <div class="container">
 
-  <!-- ログイン -->
-  <section id="loginSection" class="card">
-    <h2>ログイン</h2>
+<!-- =========================
+     ログイン
+========================= -->
 
-    <div id="loginStatus" class="status">
-      メールアドレスとパスワードを入力してください。
-    </div>
+<section id="loginSection" class="card auth">
 
-    <input id="email" type="email" placeholder="メールアドレス">
-    <input id="password" type="password" placeholder="パスワード">
+  <h1 class="login-title">
+    🎮 メダルゲームセンター
+  </h1>
 
-    <button onclick="login()">ログイン</button>
+  <div id="loginMessage" class="status">
+    ログインしてください。
+  </div>
 
-    <button class="gray" onclick="signup()">
-      新規アカウント作成
-    </button>
-  </section>
+  <div class="field">
+    <label>メールアドレス</label>
+    <input
+      id="email"
+      type="email"
+      autocomplete="email"
+      placeholder="メールアドレス"
+    >
+  </div>
 
-  <!-- メイン -->
-  <section id="mainSection" class="hidden">
+  <div class="field">
+    <label>パスワード</label>
+    <input
+      id="password"
+      type="password"
+      autocomplete="current-password"
+      placeholder="パスワード"
+    >
+  </div>
 
-    <div class="card">
-      <h2>👤 プロフィール</h2>
+  <button onclick="login()">
+    ログイン
+  </button>
 
-      <p>
-        名前：
-        <strong id="displayName">---</strong>
-      </p>
+  <button class="gray" onclick="signup()">
+    新規登録
+  </button>
 
-      <p>
-        権限：
-        <strong id="role">---</strong>
-      </p>
+</section>
 
-      <div class="medal">
-        🪙 <span id="medals">0</span> 枚
-      </div>
 
-      <button class="gray" onclick="logout()">
+<!-- =========================
+     アプリ
+========================= -->
+
+<section id="appSection" class="hidden">
+
+  <div class="card">
+
+    <div class="tabs">
+
+      <button
+        id="homeTab"
+        class="active"
+        onclick="showPage('home',this)"
+      >
+        🏠 ホーム
+      </button>
+
+      <button
+        onclick="showPage('crane',this)"
+      >
+        🦾 クレーン
+      </button>
+
+      <button
+        onclick="showPage('pusher',this)"
+      >
+        🪙 プッシャー
+      </button>
+
+      <button
+        onclick="showPage('products',this)"
+      >
+        🛍️ 商品
+      </button>
+
+      <button
+        onclick="showPage('gift',this)"
+      >
+        🎁 ギフト
+      </button>
+
+      <button
+        id="adminTab"
+        class="hidden"
+        onclick="showPage('admin',this)"
+      >
+        👑 管理者
+      </button>
+
+      <button
+        class="gray"
+        onclick="logout()"
+      >
         ログアウト
       </button>
+
     </div>
 
-    <!-- ゲーム -->
+  </div>
+
+
+<!-- =========================
+     ホーム
+========================= -->
+
+<section id="home" class="page">
+
+  <div class="card">
+
+    <h2>👤 プロフィール</h2>
+
+    <p>
+      表示名：
+      <strong id="displayName">---</strong>
+    </p>
+
+    <p>
+      ユーザー名：
+      <strong id="username">---</strong>
+    </p>
+
+    <p>
+      権限：
+      <strong id="role">---</strong>
+    </p>
+
+    <div class="medal">
+      🪙
+      <span id="homeMedals">0</span>
+      枚
+    </div>
+
+  </div>
+
+
+  <div class="grid">
+
     <div class="card">
-      <h2>🎮 ゲーム</h2>
 
-      <div class="grid">
+      <h3>🦾 クレーンゲーム</h3>
 
-        <button onclick="startMedalGame()">
-          🎰 メダルプッシャー
-        </button>
+      <p>
+        プレイボタンを押してゲーム画面へ！
+      </p>
 
-        <button onclick="startCraneGame()">
-          🕹️ クレーンゲーム
-        </button>
+      <button onclick="openGame('crane')">
+        プレイ
+      </button>
 
-      </div>
-
-      <div id="gameMessage" class="status">
-        ゲームを選択してください。
-      </div>
     </div>
 
-    <!-- 商品 -->
+
     <div class="card">
-      <h2>🛒 商品</h2>
-      <div id="productList">
-        商品を読み込み中……
-      </div>
+
+      <h3>🪙 メダルプッシャー</h3>
+
+      <p>
+        メダルやさいころボールを投入できます。
+      </p>
+
+      <button onclick="openGame('pusher')">
+        プレイ
+      </button>
+
     </div>
 
-    <!-- 管理者 -->
-    <section id="adminSection" class="hidden">
 
-      <div class="card">
+    <div class="card">
 
-        <h2 class="admin-title">
-          👑 管理者画面
-        </h2>
+      <h3>🎁 ギフトコード</h3>
 
-        <div class="status">
-          管理者権限が確認されました。
-        </div>
+      <p>
+        ギフトコードを入力してメダルを受け取れます。
+      </p>
 
-      </div>
+      <button onclick="showPage('gift')">
+        コード入力
+      </button>
 
-      <!-- メダル管理 -->
-      <div class="card">
+    </div>
 
-        <h2>🪙 メダル遠隔管理</h2>
+  </div>
 
-        <input
-          id="targetUser"
-          placeholder="対象ユーザーのUUID"
-        >
+</section>
 
-        <input
-          id="medalAmount"
-          type="number"
-          placeholder="増減枚数（例：100 / -50）"
-        >
 
-        <input
-          id="medalReason"
-          placeholder="理由"
-          value="管理者によるメダル変更"
-        >
+<!-- =========================
+     クレーン
+========================= -->
 
-        <button
-          class="green"
-          onclick="changeMedals()"
-        >
-          メダルを変更する
-        </button>
+<section id="crane" class="page hidden">
 
-        <div id="medalAdminStatus" class="status">
-          対象ユーザーを入力してください。
-        </div>
+  <div class="card">
 
-      </div>
+    <h2>🦾 クレーンゲーム</h2>
 
-      <!-- ユーザー一覧 -->
-      <div class="card">
+    <p class="small">
+      ※アームパワー設定値はプレイヤーには表示されません。
+    </p>
 
-        <h2>👥 ユーザー管理</h2>
+    <div class="game crane-machine">
 
-        <button onclick="loadUsers()">
-          ユーザー一覧を更新
-        </button>
+      <div class="crane-glass"></div>
 
-        <div id="userList">
-          まだ読み込んでいません。
-        </div>
+      <div class="crane-rail"></div>
+
+      <div id="claw" class="claw">
+
+        <div class="cable"></div>
+
+        <div class="claw-head"></div>
+
+        <div class="arm left"></div>
+
+        <div class="arm right"></div>
 
       </div>
 
-      <!-- 商品作成 -->
-      <div class="card">
+      <div id="prize" class="prize"></div>
 
-        <h2>📦 商品管理</h2>
+      <div class="outlet"></div>
 
-        <input
-          id="productName"
-          placeholder="商品名"
-        >
+    </div>
 
-        <input
-          id="productPrice"
-          type="number"
-          placeholder="価格（メダル）"
-        >
+    <div class="grid">
 
-        <input
-          id="productImage"
-          placeholder="商品画像URL（任意）"
-        >
+      <button onclick="moveClaw(-1)">
+        ⬅️ 左
+      </button>
 
-        <button
-          class="green"
-          onclick="createProduct()"
-        >
-          商品を登録
-        </button>
+      <button onclick="moveClaw(1)">
+        ➡️ 右
+      </button>
 
-        <div id="productAdminStatus" class="status">
-          商品情報を入力してください。
-        </div>
+      <button onclick="playCrane()">
+        🦾 プレイ
+      </button>
+
+      <button
+        class="gray"
+        onclick="resetCrane()"
+      >
+        🔄 リセット
+      </button>
+
+    </div>
+
+    <div id="craneMessage" class="status">
+      1プレイ：10メダル
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     プッシャー
+========================= -->
+
+<section id="pusher" class="page hidden">
+
+  <div class="card">
+
+    <h2>🪙 メダルプッシャー</h2>
+
+    <div class="game pusher">
+
+      <div class="pusher-table">
+
+        <div
+          id="pushBoard"
+          class="push-board"
+        ></div>
+
+        <div class="pusher-floor"></div>
+
+        <div
+          id="coinLayer"
+        ></div>
+
+        <div
+          id="ballLayer"
+        ></div>
 
       </div>
 
-    </section>
+    </div>
 
-  </section>
+    <div class="grid">
+
+      <button onclick="insertCoin()">
+        🪙 メダル投入
+      </button>
+
+      <button onclick="insertDiceBall()">
+        🎲 さいころボール
+      </button>
+
+      <button onclick="pushPusher()">
+        ⬅️ 押し出す
+      </button>
+
+    </div>
+
+    <div id="pusherMessage" class="status">
+      メダルを投入してください。
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     商品
+========================= -->
+
+<section id="products" class="page hidden">
+
+  <div class="card">
+
+    <h2>🛍️ 商品</h2>
+
+    <div id="productList">
+      読み込み中……
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     ギフト
+========================= -->
+
+<section id="gift" class="page hidden">
+
+  <div class="card">
+
+    <h2>🎁 ギフトコード</h2>
+
+    <div class="field">
+
+      <label>ギフトコード</label>
+
+      <input
+        id="giftCode"
+        placeholder="ギフトコード"
+      >
+
+    </div>
+
+    <button onclick="useGiftCode()">
+      メダルを受け取る
+    </button>
+
+    <div
+      id="giftMessage"
+      class="status"
+    >
+      コードを入力してください。
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     管理者
+========================= -->
+
+<section id="admin" class="page hidden">
+
+  <div class="card">
+
+    <h2 class="admin-title">
+      👑 管理者ダッシュボード
+    </h2>
+
+    <div class="status">
+      管理者専用画面です。
+    </div>
+
+  </div>
+
+
+  <!-- ユーザー管理 -->
+
+  <div class="card">
+
+    <h2>👥 ユーザー管理</h2>
+
+    <button onclick="loadUsers()">
+      🔄 ユーザー一覧更新
+    </button>
+
+    <div id="userList">
+      読み込み中……
+    </div>
+
+  </div>
+
+
+  <!-- メダル管理 -->
+
+  <div class="card">
+
+    <h2>🪙 メダル遠隔管理</h2>
+
+    <div class="field">
+
+      <label>対象ユーザーID</label>
+
+      <input
+        id="targetUserId"
+        placeholder="UUID"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>増減枚数</label>
+
+      <input
+        id="medalAmount"
+        type="number"
+        placeholder="例：100 または -50"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>理由</label>
+
+      <input
+        id="medalReason"
+        value="管理者によるメダル変更"
+      >
+
+    </div>
+
+    <button
+      class="green"
+      onclick="changeMedals()"
+    >
+      メダルを変更
+    </button>
+
+    <div
+      id="medalAdminMessage"
+      class="status"
+    >
+      対象ユーザーを選択してください。
+    </div>
+
+  </div>
+
+
+  <!-- 商品管理 -->
+
+  <div class="card">
+
+    <h2>📦 商品管理</h2>
+
+    <div class="field">
+
+      <label>商品名</label>
+
+      <input
+        id="newProductName"
+        placeholder="例：ぬいぐるみ"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>説明</label>
+
+      <input
+        id="newProductDescription"
+        placeholder="商品の説明"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>価格（メダル）</label>
+
+      <input
+        id="newProductPrice"
+        type="number"
+        min="0"
+        value="100"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>在庫</label>
+
+      <input
+        id="newProductStock"
+        type="number"
+        min="0"
+        value="1"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>画像URL</label>
+
+      <input
+        id="newProductImage"
+        placeholder="任意"
+      >
+
+    </div>
+
+    <button
+      class="green"
+      onclick="createProduct()"
+    >
+      商品を登録
+    </button>
+
+    <div
+      id="productAdminMessage"
+      class="status"
+    >
+      商品情報を入力してください。
+    </div>
+
+  </div>
+
+
+  <!-- ギフトコード管理 -->
+
+  <div class="card">
+
+    <h2>🎁 ギフトコード作成</h2>
+
+    <div class="field">
+
+      <label>コード</label>
+
+      <input
+        id="newGiftCode"
+        placeholder="例：SUMMER100"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>メダル数</label>
+
+      <input
+        id="newGiftMedals"
+        type="number"
+        min="1"
+        value="100"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>最大使用回数</label>
+
+      <input
+        id="newGiftMaxUses"
+        type="number"
+        min="1"
+        value="1"
+      >
+
+    </div>
+
+    <button
+      class="green"
+      onclick="createGiftCode()"
+    >
+      ギフトコード作成
+    </button>
+
+    <div
+      id="giftAdminMessage"
+      class="status"
+    >
+      コードを入力してください。
+    </div>
+
+  </div>
+
+
+  <!-- クレーン台管理 -->
+
+  <div class="card">
+
+    <h2>🦾 クレーン台管理</h2>
+
+    <div class="field">
+
+      <label>台名</label>
+
+      <input
+        id="machineName"
+        placeholder="クレーン台1"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>景品名</label>
+
+      <input
+        id="machinePrize"
+        placeholder="ぬいぐるみ"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>アームパワー（管理者専用）</label>
+
+      <input
+        id="machinePower"
+        type="number"
+        min="0"
+        max="100"
+        value="50"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>在庫</label>
+
+      <input
+        id="machineStock"
+        type="number"
+        min="0"
+        value="10"
+      >
+
+    </div>
+
+    <button
+      class="green"
+      onclick="createMachine()"
+    >
+      クレーン台を作成
+    </button>
+
+    <div
+      id="machineAdminMessage"
+      class="status"
+    >
+      管理者だけがアームパワーを設定できます。
+    </div>
+
+  </div>
+
+</section>
+
+</section>
 
 </div>
 
+
 <script>
 
-/* ==========================================
-   Supabase設定
-========================================== */
+/* =====================================
+   Supabase
+===================================== */
 
 const SUPABASE_URL =
-  "https://kizcfsgfeurwlpwcfrzp.supabase.co";
+"https://kizcfsgfeurwlpwcfrzp.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_onwTGaCaOPH3LerDm0tXOA_KnjyS2hG";
+"sb_publishable_onwTGaCaOPH3LerDm0tXOA_KnjyS2hG";
 
 const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 
-/* ==========================================
+/* =====================================
    状態
-========================================== */
+===================================== */
 
-let currentUser = null;
-let currentProfile = null;
+let currentUser=null;
+let currentProfile=null;
+
+let clawPosition=50;
+let craneBusy=false;
 
 
-/* ==========================================
+/* =====================================
    起動
-========================================== */
+===================================== */
 
-window.addEventListener("load", async () => {
+window.addEventListener(
+  "load",
+  init
+);
+
+
+async function init(){
 
   const {
     data:{session}
-  } = await supabaseClient.auth.getSession();
+  } =
+  await supabaseClient.auth.getSession();
 
   if(session){
 
-    currentUser = session.user;
+    currentUser=session.user;
 
     await loadProfile();
 
   }
 
-});
+}
 
 
-/* ==========================================
+/* =====================================
    ログイン
-========================================== */
+===================================== */
 
 async function login(){
 
   const email =
-    document.getElementById("email").value.trim();
+    document
+      .getElementById("email")
+      .value
+      .trim();
 
   const password =
-    document.getElementById("password").value;
+    document
+      .getElementById("password")
+      .value;
 
   if(!email || !password){
 
-    setLoginStatus(
+    setText(
+      "loginMessage",
       "メールアドレスとパスワードを入力してください。"
     );
 
     return;
   }
 
-  setLoginStatus("ログイン中……");
+  setText(
+    "loginMessage",
+    "ログインしています……"
+  );
 
   const {
     data,
     error
-  } = await supabaseClient.auth.signInWithPassword({
+  } =
+  await supabaseClient.auth.signInWithPassword({
     email,
     password
   });
 
   if(error){
 
-    setLoginStatus(
-      "ログイン失敗：" + error.message
+    setText(
+      "loginMessage",
+      "ログイン失敗：" +
+      error.message
     );
 
     return;
   }
 
-  currentUser = data.user;
+  currentUser=data.user;
 
   await loadProfile();
 
 }
 
 
-/* ==========================================
+/* =====================================
    新規登録
-========================================== */
+===================================== */
 
 async function signup(){
 
   const email =
-    document.getElementById("email").value.trim();
+    document
+      .getElementById("email")
+      .value
+      .trim();
 
   const password =
-    document.getElementById("password").value;
+    document
+      .getElementById("password")
+      .value;
 
   if(!email || !password){
 
-    setLoginStatus(
+    setText(
+      "loginMessage",
       "メールアドレスとパスワードを入力してください。"
     );
 
@@ -447,115 +1247,158 @@ async function signup(){
   }
 
   const {
-    data,
     error
-  } = await supabaseClient.auth.signUp({
+  } =
+  await supabaseClient.auth.signUp({
     email,
     password
   });
 
   if(error){
 
-    setLoginStatus(
-      "登録失敗：" + error.message
+    setText(
+      "loginMessage",
+      "登録失敗：" +
+      error.message
     );
 
     return;
   }
 
-  setLoginStatus(
-    "登録しました。メール確認が必要な設定の場合は、メールを確認してください。"
+  setText(
+    "loginMessage",
+    "登録しました。メール確認が必要な設定の場合はメールを確認してください。"
   );
 
 }
 
 
-/* ==========================================
+/* =====================================
    プロフィール
-========================================== */
+===================================== */
 
 async function loadProfile(){
-
-  if(!currentUser) return;
 
   const {
     data,
     error
-  } = await supabaseClient
+  } =
+  await supabaseClient
     .from("profiles")
     .select("*")
-    .eq("id", currentUser.id)
+    .eq("id",currentUser.id)
     .single();
 
   if(error){
 
     console.error(error);
 
-    setLoginStatus(
-      "プロフィールを取得できませんでした。"
+    setText(
+      "loginMessage",
+      "プロフィール取得失敗：" +
+      error.message
     );
 
     return;
   }
 
-  currentProfile = data;
+  currentProfile=data;
+
+  if(data.is_banned){
+
+    alert(
+      "このアカウントは利用停止されています。"
+    );
+
+    await logout();
+
+    return;
+  }
 
   document
     .getElementById("loginSection")
     .classList.add("hidden");
 
   document
-    .getElementById("mainSection")
+    .getElementById("appSection")
     .classList.remove("hidden");
 
   document
-    .getElementById("displayName")
-    .textContent =
-      data.display_name ||
-      data.username ||
-      currentUser.email;
+    .getElementById("header")
+    .classList.remove("hidden");
 
-  document
-    .getElementById("role")
-    .textContent =
-      data.role || "user";
+  updateProfileDisplay();
 
-  document
-    .getElementById("medals")
-    .textContent =
-      Number(data.medals || 0).toLocaleString();
-
-  /* 管理者判定 */
-
-  const adminRoles = [
-    "admin",
-    "manager",
-    "master",
-    "owner"
-  ];
+  const role =
+    String(data.role || "user")
+      .toLowerCase();
 
   if(
-    adminRoles.includes(
-      String(data.role || "").toLowerCase()
-    )
+    role==="admin" ||
+    role==="manager" ||
+    role==="master" ||
+    role==="owner"
   ){
 
     document
-      .getElementById("adminSection")
+      .getElementById("adminTab")
       .classList.remove("hidden");
 
-    loadUsers();
+    await loadUsers();
 
   }
 
-  loadProducts();
+  await loadProducts();
 
 }
 
 
-/* ==========================================
+/* =====================================
+   表示更新
+===================================== */
+
+function updateProfileDisplay(){
+
+  const name =
+    currentProfile.display_name ||
+    currentProfile.username ||
+    currentUser.email ||
+    "ユーザー";
+
+  setText(
+    "displayName",
+    name
+  );
+
+  setText(
+    "username",
+    currentProfile.username || "---"
+  );
+
+  setText(
+    "role",
+    currentProfile.role || "user"
+  );
+
+  const medals =
+    Number(currentProfile.medals || 0);
+
+  setText(
+    "homeMedals",
+    medals.toLocaleString()
+  );
+
+  setText(
+    "headerMedals",
+    medals.toLocaleString()
+  );
+
+}
+
+
+/* =====================================
    ログアウト
-========================================== */
+===================================== */
 
 async function logout(){
 
@@ -566,99 +1409,384 @@ async function logout(){
 }
 
 
-/* ==========================================
-   メダル遠隔変更
-========================================== */
+/* =====================================
+   ページ切替
+===================================== */
 
-async function changeMedals(){
+function showPage(pageId,button){
 
-  const targetUserId =
-    document
-      .getElementById("targetUser")
-      .value
-      .trim();
+  document
+    .querySelectorAll(".page")
+    .forEach(page=>{
+      page.classList.add("hidden");
+    });
 
-  const amount =
-    Number(
-      document
-        .getElementById("medalAmount")
-        .value
-    );
+  const page =
+    document.getElementById(pageId);
 
-  const reason =
-    document
-      .getElementById("medalReason")
-      .value
-      .trim() ||
-      "管理者によるメダル変更";
-
-  if(!targetUserId){
-
-    setMedalAdminStatus(
-      "対象ユーザーのUUIDを入力してください。"
-    );
-
-    return;
+  if(page){
+    page.classList.remove("hidden");
   }
 
-  if(!Number.isInteger(amount) || amount === 0){
+  document
+    .querySelectorAll(".tabs button")
+    .forEach(btn=>{
+      btn.classList.remove("active");
+    });
 
-    setMedalAdminStatus(
-      "増減枚数には0以外の整数を入力してください。"
-    );
-
-    return;
+  if(button){
+    button.classList.add("active");
   }
 
-  setMedalAdminStatus(
-    "メダルを変更しています……"
-  );
-
-  const {
-    data,
-    error
-  } = await supabaseClient.rpc(
-    "admin_change_medals",
-    {
-      target_user_id: targetUserId,
-      medal_amount: amount,
-      reason: reason
-    }
-  );
-
-  if(error){
-
-    console.error(error);
-
-    setMedalAdminStatus(
-      "変更失敗：" + error.message
-    );
-
-    return;
+  if(pageId==="pusher"){
+    renderPusher();
   }
 
-  setMedalAdminStatus(
-    "成功しました。変更後メダル：" +
-    Number(data).toLocaleString() +
-    "枚"
-  );
+}
 
-  await loadUsers();
 
-  if(targetUserId === currentUser.id){
+/* =====================================
+   ゲームを開く
+===================================== */
 
-    await loadProfile();
+function openGame(type){
+
+  if(type==="crane"){
+
+    showPage("crane");
+
+  }
+
+  if(type==="pusher"){
+
+    showPage("pusher");
 
   }
 
 }
 
 
-/* ==========================================
+/* =====================================
+   クレーン移動
+===================================== */
+
+function moveClaw(direction){
+
+  if(craneBusy)return;
+
+  clawPosition += direction * 12;
+
+  clawPosition =
+    Math.max(
+      12,
+      Math.min(88,clawPosition)
+    );
+
+  document
+    .getElementById("claw")
+    .style.left =
+      clawPosition + "%";
+
+}
+
+
+/* =====================================
+   クレーンプレイ
+===================================== */
+
+async function playCrane(){
+
+  if(craneBusy)return;
+
+  craneBusy=true;
+
+  const message =
+    document
+      .getElementById("craneMessage");
+
+  const claw =
+    document.getElementById("claw");
+
+  const prize =
+    document.getElementById("prize");
+
+  if(
+    Number(currentProfile.medals || 0)
+    < 10
+  ){
+
+    message.textContent =
+      "メダルが足りません。";
+
+    craneBusy=false;
+
+    return;
+  }
+
+  message.textContent =
+    "アーム下降中……";
+
+  claw.style.top="190px";
+
+  await wait(900);
+
+  claw.classList.add("open");
+
+  await wait(350);
+
+  message.textContent =
+    "景品を掴んでいます……";
+
+  claw.classList.remove("open");
+
+  await wait(450);
+
+  prize.classList.add("lift");
+
+  claw.style.top="95px";
+
+  await wait(900);
+
+  const random =
+    Math.random();
+
+  if(random < 0.45){
+
+    message.textContent =
+      "ポロッ……！途中で落ちました！";
+
+    prize.classList.remove("lift");
+    prize.classList.add("drop");
+
+  }else if(random < 0.75){
+
+    message.textContent =
+      "惜しい！景品が落ちました！";
+
+    await wait(300);
+
+    prize.classList.remove("lift");
+    prize.classList.add("drop");
+
+  }else{
+
+    message.textContent =
+      "🎉 景品ゲット！";
+
+    prize.classList.remove("lift");
+
+    prize.style.left="43%";
+    prize.style.bottom="10px";
+
+  }
+
+  await wait(1200);
+
+  resetCrane();
+
+  craneBusy=false;
+
+}
+
+
+/* =====================================
+   クレーンリセット
+===================================== */
+
+function resetCrane(){
+
+  const claw =
+    document.getElementById("claw");
+
+  const prize =
+    document.getElementById("prize");
+
+  claw.style.top="38px";
+
+  prize.classList.remove(
+    "lift",
+    "drop"
+  );
+
+  prize.style.left="45%";
+  prize.style.bottom="70px";
+
+  document
+    .getElementById("craneMessage")
+    .textContent =
+      "1プレイ：10メダル";
+
+}
+
+
+/* =====================================
+   プッシャー
+===================================== */
+
+function insertCoin(){
+
+  const layer =
+    document.getElementById("coinLayer");
+
+  const coin =
+    document.createElement("div");
+
+  coin.className="coin";
+
+  coin.style.left =
+    (35 + Math.random()*30) + "%";
+
+  coin.style.top =
+    (35 + Math.random()*35) + "%";
+
+  layer.appendChild(coin);
+
+  setText(
+    "pusherMessage",
+    "🪙 メダルを投入しました！"
+  );
+
+}
+
+
+function insertDiceBall(){
+
+  const layer =
+    document.getElementById("ballLayer");
+
+  const ball =
+    document.createElement("div");
+
+  ball.className="ball";
+
+  ball.textContent =
+    String(
+      Math.floor(
+        Math.random()*6
+      )+1
+    );
+
+  ball.style.left =
+    (40 + Math.random()*20) + "%";
+
+  ball.style.top="15%";
+
+  layer.appendChild(ball);
+
+  animateBall(ball);
+
+  setText(
+    "pusherMessage",
+    "🎲 さいころボールを投入しました！"
+  );
+
+}
+
+
+async function animateBall(ball){
+
+  let top=15;
+
+  for(let i=0;i<30;i++){
+
+    top += 2;
+
+    ball.style.top =
+      Math.min(top,68) + "%";
+
+    await wait(30);
+
+  }
+
+}
+
+
+function pushPusher(){
+
+  const board =
+    document.getElementById("pushBoard");
+
+  board.style.transform =
+    "translateX(25px)";
+
+  setText(
+    "pusherMessage",
+    "⬅️ プッシャーが押し出しました！"
+  );
+
+  setTimeout(()=>{
+
+    board.style.transform =
+      "translateX(0)";
+
+  },350);
+
+}
+
+
+function renderPusher(){
+
+  const layer =
+    document.getElementById("coinLayer");
+
+  if(layer.children.length===0){
+
+    for(let i=0;i<12;i++){
+
+      const coin =
+        document.createElement("div");
+
+      coin.className="coin";
+
+      coin.style.left =
+        (20 + Math.random()*60) + "%";
+
+      coin.style.top =
+        (35 + Math.random()*35) + "%";
+
+      layer.appendChild(coin);
+
+    }
+
+  }
+
+}
+
+
+/* =====================================
+   管理者確認
+===================================== */
+
+function isAdmin(){
+
+  if(!currentProfile){
+
+    return false;
+
+  }
+
+  const role =
+    String(
+      currentProfile.role || ""
+    ).toLowerCase();
+
+  return [
+    "admin",
+    "manager",
+    "master",
+    "owner"
+  ].includes(role);
+
+}
+
+
+/* =====================================
    ユーザー一覧
-========================================== */
+===================================== */
 
 async function loadUsers(){
+
+  if(!isAdmin())return;
 
   const list =
     document.getElementById("userList");
@@ -669,52 +1797,60 @@ async function loadUsers(){
   const {
     data,
     error
-  } = await supabaseClient
+  } =
+  await supabaseClient
     .from("profiles")
     .select(
-      "id,username,display_name,role,medals"
+      "id,username,display_name,role,medals,is_banned"
     )
-    .order("display_name");
+    .order(
+      "created_at",
+      {ascending:true}
+    );
 
   if(error){
 
-    console.error(error);
-
     list.innerHTML =
-      "ユーザー取得失敗：" +
+      "取得失敗：" +
       error.message;
 
     return;
+
   }
 
-  if(!data || data.length === 0){
+  list.innerHTML="";
 
-    list.innerHTML =
+  if(!data || data.length===0){
+
+    list.textContent =
       "ユーザーがありません。";
 
     return;
+
   }
 
-  list.innerHTML = "";
-
-  data.forEach(user => {
+  data.forEach(user=>{
 
     const div =
       document.createElement("div");
 
-    div.className = "user";
+    div.className="user";
+
+    const name =
+      user.display_name ||
+      user.username ||
+      "名前なし";
 
     div.innerHTML = `
-      <strong>
-        ${escapeHtml(
-          user.display_name ||
-          user.username ||
-          "名前なし"
-        )}
-      </strong>
+      <strong>${escapeHtml(name)}</strong>
 
       <div class="small">
         ID：${escapeHtml(user.id)}
+      </div>
+
+      <div>
+        ユーザー名：
+        ${escapeHtml(user.username || "---")}
       </div>
 
       <div>
@@ -726,6 +1862,11 @@ async function loadUsers(){
         🪙
         ${Number(user.medals || 0).toLocaleString()}
         枚
+      </div>
+
+      <div>
+        状態：
+        ${user.is_banned ? "🚫 利用停止" : "✅ 通常"}
       </div>
 
       <button
@@ -743,263 +1884,606 @@ async function loadUsers(){
 }
 
 
-/* ==========================================
+/* =====================================
    ユーザー選択
-========================================== */
+===================================== */
 
 function selectUser(id){
 
   document
-    .getElementById("targetUser")
-    .value = id;
+    .getElementById("targetUserId")
+    .value=id;
 
-  window.scrollTo({
-    top:
-      document
-        .getElementById("targetUser")
-        .getBoundingClientRect()
-        .top +
-      window.scrollY -
-      120,
-    behavior:"smooth"
-  });
+  document
+    .getElementById("targetUserId")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
 
 }
 
 
-/* ==========================================
+/* =====================================
+   メダル遠隔変更
+===================================== */
+
+async function changeMedals(){
+
+  if(!isAdmin()){
+
+    alert(
+      "管理者権限が必要です。"
+    );
+
+    return;
+
+  }
+
+  const target =
+    document
+      .getElementById("targetUserId")
+      .value
+      .trim();
+
+  const amount =
+    Number(
+      document
+        .getElementById("medalAmount")
+        .value
+    );
+
+  const reason =
+    document
+      .getElementById("medalReason")
+      .value
+      .trim();
+
+  if(!target){
+
+    setText(
+      "medalAdminMessage",
+      "対象ユーザーを選択してください。"
+    );
+
+    return;
+
+  }
+
+  if(
+    !Number.isInteger(amount) ||
+    amount===0
+  ){
+
+    setText(
+      "medalAdminMessage",
+      "増減枚数を正しく入力してください。"
+    );
+
+    return;
+
+  }
+
+  setText(
+    "medalAdminMessage",
+    "処理中……"
+  );
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient.rpc(
+    "admin_change_medals",
+    {
+      target_user_id:target,
+      medal_amount:amount,
+      reason:
+        reason ||
+        "管理者によるメダル変更"
+    }
+  );
+
+  if(error){
+
+    setText(
+      "medalAdminMessage",
+      "失敗：" +
+      error.message
+    );
+
+    return;
+
+  }
+
+  setText(
+    "medalAdminMessage",
+    "成功！変更後メダル：" +
+    Number(data).toLocaleString() +
+    "枚"
+  );
+
+  await loadUsers();
+
+  if(target===currentUser.id){
+
+    await loadProfile();
+
+  }
+
+}
+
+
+/* =====================================
    商品一覧
-========================================== */
+===================================== */
 
 async function loadProducts(){
 
   const list =
     document.getElementById("productList");
 
-  try{
+  list.innerHTML =
+    "読み込み中……";
 
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("products")
-      .select("*")
-      .order("created_at",{
-        ascending:false
-      });
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("shop_products")
+    .select(
+      "id,name,description,price_medals,stock,image_url,enabled"
+    )
+    .eq("enabled",true)
+    .order(
+      "created_at",
+      {ascending:false}
+    );
 
-    if(error){
-
-      list.innerHTML =
-        "商品を読み込めませんでした。";
-
-      console.error(error);
-
-      return;
-    }
-
-    if(!data || data.length === 0){
-
-      list.innerHTML =
-        "現在、商品はありません。";
-
-      return;
-    }
-
-    list.innerHTML = "";
-
-    data.forEach(product => {
-
-      const div =
-        document.createElement("div");
-
-      div.className = "product";
-
-      div.innerHTML = `
-        <div>
-          <strong>
-            ${escapeHtml(product.name || "商品")}
-          </strong>
-
-          <div class="small">
-            ${Number(
-              product.price || 0
-            ).toLocaleString()} メダル
-          </div>
-        </div>
-
-        <button
-          onclick="buyProduct('${product.id}')"
-        >
-          交換
-        </button>
-      `;
-
-      list.appendChild(div);
-
-    });
-
-  }catch(e){
-
-    console.error(e);
+  if(error){
 
     list.innerHTML =
-      "商品を読み込めませんでした。";
+      "商品取得失敗：" +
+      error.message;
+
+    return;
 
   }
+
+  if(!data || data.length===0){
+
+    list.textContent =
+      "現在、商品はありません。";
+
+    return;
+
+  }
+
+  list.innerHTML="";
+
+  data.forEach(product=>{
+
+    const div =
+      document.createElement("div");
+
+    div.className="product";
+
+    let image="";
+
+    if(product.image_url){
+
+      image = `
+        <img
+          src="${escapeAttribute(product.image_url)}"
+          alt="商品画像"
+          onerror="this.style.display='none'"
+        >
+      `;
+
+    }
+
+    div.innerHTML = `
+      ${image}
+
+      <h3>
+        ${escapeHtml(product.name)}
+      </h3>
+
+      <p>
+        ${escapeHtml(product.description || "")}
+      </p>
+
+      <p>
+        🪙
+        ${Number(
+          product.price_medals || 0
+        ).toLocaleString()}
+        メダル
+      </p>
+
+      <p class="small">
+        在庫：
+        ${Number(product.stock || 0)}
+      </p>
+    `;
+
+    list.appendChild(div);
+
+  });
 
 }
 
 
-/* ==========================================
-   商品登録
-========================================== */
+/* =====================================
+   商品作成
+===================================== */
 
 async function createProduct(){
 
+  if(!isAdmin()){
+
+    alert(
+      "管理者権限が必要です。"
+    );
+
+    return;
+
+  }
+
   const name =
     document
-      .getElementById("productName")
+      .getElementById("newProductName")
+      .value
+      .trim();
+
+  const description =
+    document
+      .getElementById("newProductDescription")
       .value
       .trim();
 
   const price =
     Number(
       document
-        .getElementById("productPrice")
+        .getElementById("newProductPrice")
+        .value
+    );
+
+  const stock =
+    Number(
+      document
+        .getElementById("newProductStock")
         .value
     );
 
   const image =
     document
-      .getElementById("productImage")
+      .getElementById("newProductImage")
       .value
       .trim();
 
   if(!name){
 
-    setProductAdminStatus(
+    setText(
+      "productAdminMessage",
       "商品名を入力してください。"
     );
 
     return;
+
   }
 
-  if(!Number.isInteger(price) || price < 0){
+  if(
+    !Number.isInteger(price) ||
+    price<0
+  ){
 
-    setProductAdminStatus(
+    setText(
+      "productAdminMessage",
       "価格を正しく入力してください。"
     );
 
     return;
+
+  }
+
+  if(
+    !Number.isInteger(stock) ||
+    stock<0
+  ){
+
+    setText(
+      "productAdminMessage",
+      "在庫を正しく入力してください。"
+    );
+
+    return;
+
   }
 
   const {
+    data,
     error
-  } = await supabaseClient
-    .from("products")
-    .insert({
-      name:name,
-      price:price,
-      image_url:image || null
-    });
+  } =
+  await supabaseClient.rpc(
+    "admin_create_product",
+    {
+      product_name:name,
+      product_description:description,
+      product_price:price,
+      product_stock:stock,
+      product_image_url:image || null
+    }
+  );
 
   if(error){
 
-    console.error(error);
-
-    setProductAdminStatus(
-      "商品登録失敗：" +
+    setText(
+      "productAdminMessage",
+      "登録失敗：" +
       error.message
     );
 
     return;
+
   }
 
-  setProductAdminStatus(
-    "商品を登録しました。"
+  setText(
+    "productAdminMessage",
+    "商品を登録しました！"
   );
 
   document
-    .getElementById("productName")
-    .value = "";
+    .getElementById("newProductName")
+    .value="";
 
   document
-    .getElementById("productPrice")
-    .value = "";
+    .getElementById("newProductDescription")
+    .value="";
 
   document
-    .getElementById("productImage")
-    .value = "";
+    .getElementById("newProductPrice")
+    .value="100";
 
-  loadProducts();
+  document
+    .getElementById("newProductStock")
+    .value="1";
+
+  document
+    .getElementById("newProductImage")
+    .value="";
+
+  await loadProducts();
 
 }
 
 
-/* ==========================================
-   商品交換
-========================================== */
+/* =====================================
+   ギフトコード作成
+===================================== */
 
-async function buyProduct(id){
+async function createGiftCode(){
 
-  alert(
-    "商品交換機能は次の段階で安全な決済RPCを接続します。"
+  if(!isAdmin()){
+
+    alert(
+      "管理者権限が必要です。"
+    );
+
+    return;
+
+  }
+
+  const code =
+    document
+      .getElementById("newGiftCode")
+      .value
+      .trim()
+      .toUpperCase();
+
+  const medals =
+    Number(
+      document
+        .getElementById("newGiftMedals")
+        .value
+    );
+
+  const maxUses =
+    Number(
+      document
+        .getElementById("newGiftMaxUses")
+        .value
+    );
+
+  if(!code){
+
+    setText(
+      "giftAdminMessage",
+      "コードを入力してください。"
+    );
+
+    return;
+
+  }
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient.rpc(
+    "admin_create_gift_code",
+    {
+      gift_code:code,
+      gift_medals:medals,
+      gift_max_uses:maxUses,
+      gift_expires_at:null
+    }
+  );
+
+  if(error){
+
+    setText(
+      "giftAdminMessage",
+      "作成失敗：" +
+      error.message
+    );
+
+    return;
+
+  }
+
+  setText(
+    "giftAdminMessage",
+    "ギフトコードを作成しました！"
+  );
+
+  document
+    .getElementById("newGiftCode")
+    .value="";
+
+}
+
+
+/* =====================================
+   ギフトコード使用
+===================================== */
+
+async function useGiftCode(){
+
+  const code =
+    document
+      .getElementById("giftCode")
+      .value
+      .trim()
+      .toUpperCase();
+
+  if(!code){
+
+    setText(
+      "giftMessage",
+      "ギフトコードを入力してください。"
+    );
+
+    return;
+
+  }
+
+  /*
+    ギフトコード使用RPCを追加した後に
+    ここから接続します。
+  */
+
+  setText(
+    "giftMessage",
+    "現在、ギフトコード作成機能は接続済みです。使用処理は安全な専用RPC接続後に有効になります。"
   );
 
 }
 
 
-/* ==========================================
-   ゲーム
-========================================== */
+/* =====================================
+   クレーン台作成
+===================================== */
 
-function startMedalGame(){
+async function createMachine(){
 
-  document
-    .getElementById("gameMessage")
-    .textContent =
-      "🎰 メダルプッシャーを準備中……";
+  if(!isAdmin()){
+
+    alert(
+      "管理者権限が必要です。"
+    );
+
+    return;
+
+  }
+
+  const name =
+    document
+      .getElementById("machineName")
+      .value
+      .trim();
+
+  const prize =
+    document
+      .getElementById("machinePrize")
+      .value
+      .trim();
+
+  const power =
+    Number(
+      document
+        .getElementById("machinePower")
+        .value
+    );
+
+  const stock =
+    Number(
+      document
+        .getElementById("machineStock")
+        .value
+    );
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient.rpc(
+    "admin_create_crane_machine",
+    {
+      machine_name:name,
+      machine_prize_name:prize,
+      machine_arm_power:power,
+      machine_stock:stock
+    }
+  );
+
+  if(error){
+
+    setText(
+      "machineAdminMessage",
+      "作成失敗：" +
+      error.message
+    );
+
+    return;
+
+  }
+
+  setText(
+    "machineAdminMessage",
+    "クレーン台を作成しました！"
+  );
 
 }
 
-function startCraneGame(){
 
-  document
-    .getElementById("gameMessage")
-    .textContent =
-      "🕹️ 物理演算クレーンゲームを準備中……";
+/* =====================================
+   共通
+===================================== */
 
-}
+function wait(ms){
 
-
-/* ==========================================
-   表示補助
-========================================== */
-
-function setLoginStatus(text){
-
-  document
-    .getElementById("loginStatus")
-    .textContent = text;
+  return new Promise(
+    resolve=>setTimeout(resolve,ms)
+  );
 
 }
 
-function setMedalAdminStatus(text){
 
-  document
-    .getElementById("medalAdminStatus")
-    .textContent = text;
+function setText(id,text){
 
-}
+  const element =
+    document.getElementById(id);
 
-function setProductAdminStatus(text){
+  if(element){
 
-  document
-    .getElementById("productAdminStatus")
-    .textContent = text;
+    element.textContent=text;
+
+  }
 
 }
+
 
 function escapeHtml(value){
 
@@ -1013,20 +2497,27 @@ function escapeHtml(value){
 }
 
 
-/* ==========================================
-   認証状態監視
-========================================== */
+function escapeAttribute(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+
+}
+
+
+/* =====================================
+   認証状態
+===================================== */
 
 supabaseClient.auth.onAuthStateChange(
-  async (event,session) => {
+  async(event,session)=>{
 
     if(session){
 
-      currentUser = session.user;
-
-    }else{
-
-      currentUser = null;
+      currentUser=session.user;
 
     }
 
