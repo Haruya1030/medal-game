@@ -17,7 +17,20 @@
 
 <style>
 *{box-sizing:border-box}
-body{
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(reg => {
+        console.log("Service Worker 登録成功:", reg.scope);
+      })
+      .catch(err => {
+        console.error("Service Worker 登録失敗:", err);
+      });
+  });
+}
+</script>
+  body{
  margin:0;
  font-family:Arial,sans-serif;
  background:#080808;
