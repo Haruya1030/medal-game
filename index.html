@@ -1153,7 +1153,123 @@ async function init(){
 
     currentUser=session.user;
 
-    await loadProfile();
+    async function loadProducts(){
+
+  const list =
+    document.getElementById("productList");
+
+  list.innerHTML = "読み込み中……";
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("shop_products")
+    .select(
+      "id,name,description,price_medals,medal_price,stock,image_url,enabled"
+    )
+    .eq("enabled",true)
+    .order(
+      "created_at",
+      {ascending:false}
+    );
+
+  if(error){
+
+    list.innerHTML =
+      "商品取得失敗：" +
+      error.message;
+
+    return;
+
+  }
+
+  if(!data || data.length === 0){
+
+    list.textContent =
+      "現在、商品はありません。";
+
+    return;
+
+  }
+
+  list.innerHTML = "";
+
+  data.forEach(product => {
+
+    const div =
+      document.createElement("div");
+
+    div.className = "product";
+
+    const price =
+      Number(
+        product.medal_price ??
+        product.price_medals ??
+        0
+      );
+
+    const stock =
+      Number(product.stock || 0);
+
+    let image = "";
+
+    if(product.image_url){
+
+      image = `
+        <img
+          src="${escapeAttribute(product.image_url)}"
+          alt="商品画像"
+          onerror="this.style.display='none'"
+        >
+      `;
+
+    }
+
+    const soldOut =
+      stock <= 0;
+
+    div.innerHTML = `
+      ${image}
+
+      <h3>
+        ${escapeHtml(product.name)}
+      </h3>
+
+      <p>
+        ${escapeHtml(product.description || "")}
+      </p>
+
+      <p>
+        🪙
+        ${price.toLocaleString()}
+        メダル
+      </p>
+
+      <p class="small">
+        在庫：
+        ${stock.toLocaleString()}
+      </p>
+
+      <button
+        ${soldOut ? "disabled" : ""}
+        onclick="purchaseProduct(${Number(product.id)})"
+      >
+        ${soldOut ? "売り切れ" : "🛒 購入する"}
+      </button>
+
+      <div
+        id="purchaseMessage-${Number(product.id)}"
+        class="status"
+      ></div>
+    `;
+
+    list.appendChild(div);
+
+  });
+
+}
 
   }
 
