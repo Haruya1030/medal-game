@@ -1,326 +1,1040 @@
--- =========================================
--- 管理者用 商品・ギフトコード・クレーン台RPC
--- =========================================
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>メダルゲームセンター</title>
 
--- 管理者確認用
-create or replace function public.is_admin()
-returns boolean
-language sql
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1
-    from public.profiles
-    where id = auth.uid()
-      and role = 'admin'
-      and coalesce(is_banned, false) = false
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans JP",sans-serif;
+  background:#080b10;
+  color:#fff;
+}
+
+header{
+  background:#111722;
+  padding:18px;
+  border-bottom:1px solid #283141;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+header h1{
+  margin:0;
+  font-size:22px;
+}
+
+.container{
+  width:min(1100px,94%);
+  margin:25px auto;
+}
+
+.card{
+  background:#111722;
+  border:1px solid #293344;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+input,select,button{
+  width:100%;
+  padding:13px;
+  margin-top:8px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:1px solid #39465b;
+  background:#0b1018;
+  color:#fff;
+  font-size:15px;
+}
+
+button{
+  background:#2478ff;
+  border:0;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{
+  opacity:.85;
+}
+
+button.red{
+  background:#d9363e;
+}
+
+button.green{
+  background:#1fa463;
+}
+
+button.gray{
+  background:#3a4352;
+}
+
+.medal{
+  font-size:42px;
+  font-weight:bold;
+  text-align:center;
+  padding:20px;
+}
+
+.status{
+  padding:12px;
+  border-radius:10px;
+  background:#182231;
+  margin-bottom:15px;
+}
+
+.user{
+  border:1px solid #303b4e;
+  border-radius:12px;
+  padding:15px;
+  margin-top:10px;
+}
+
+.user strong{
+  font-size:17px;
+}
+
+.admin-title{
+  color:#ffd34d;
+}
+
+.product{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  align-items:center;
+  border-bottom:1px solid #303b4e;
+  padding:12px 0;
+}
+
+.product:last-child{
+  border-bottom:0;
+}
+
+.small{
+  color:#9ba8ba;
+  font-size:13px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+
+@media(max-width:600px){
+  header h1{font-size:18px}
+  .card{padding:15px}
+  .medal{font-size:32px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎰 メダルゲームセンター</h1>
+</header>
+
+<div class="container">
+
+  <!-- ログイン -->
+  <section id="loginSection" class="card">
+    <h2>ログイン</h2>
+
+    <div id="loginStatus" class="status">
+      メールアドレスとパスワードを入力してください。
+    </div>
+
+    <input id="email" type="email" placeholder="メールアドレス">
+    <input id="password" type="password" placeholder="パスワード">
+
+    <button onclick="login()">ログイン</button>
+
+    <button class="gray" onclick="signup()">
+      新規アカウント作成
+    </button>
+  </section>
+
+  <!-- メイン -->
+  <section id="mainSection" class="hidden">
+
+    <div class="card">
+      <h2>👤 プロフィール</h2>
+
+      <p>
+        名前：
+        <strong id="displayName">---</strong>
+      </p>
+
+      <p>
+        権限：
+        <strong id="role">---</strong>
+      </p>
+
+      <div class="medal">
+        🪙 <span id="medals">0</span> 枚
+      </div>
+
+      <button class="gray" onclick="logout()">
+        ログアウト
+      </button>
+    </div>
+
+    <!-- ゲーム -->
+    <div class="card">
+      <h2>🎮 ゲーム</h2>
+
+      <div class="grid">
+
+        <button onclick="startMedalGame()">
+          🎰 メダルプッシャー
+        </button>
+
+        <button onclick="startCraneGame()">
+          🕹️ クレーンゲーム
+        </button>
+
+      </div>
+
+      <div id="gameMessage" class="status">
+        ゲームを選択してください。
+      </div>
+    </div>
+
+    <!-- 商品 -->
+    <div class="card">
+      <h2>🛒 商品</h2>
+      <div id="productList">
+        商品を読み込み中……
+      </div>
+    </div>
+
+    <!-- 管理者 -->
+    <section id="adminSection" class="hidden">
+
+      <div class="card">
+
+        <h2 class="admin-title">
+          👑 管理者画面
+        </h2>
+
+        <div class="status">
+          管理者権限が確認されました。
+        </div>
+
+      </div>
+
+      <!-- メダル管理 -->
+      <div class="card">
+
+        <h2>🪙 メダル遠隔管理</h2>
+
+        <input
+          id="targetUser"
+          placeholder="対象ユーザーのUUID"
+        >
+
+        <input
+          id="medalAmount"
+          type="number"
+          placeholder="増減枚数（例：100 / -50）"
+        >
+
+        <input
+          id="medalReason"
+          placeholder="理由"
+          value="管理者によるメダル変更"
+        >
+
+        <button
+          class="green"
+          onclick="changeMedals()"
+        >
+          メダルを変更する
+        </button>
+
+        <div id="medalAdminStatus" class="status">
+          対象ユーザーを入力してください。
+        </div>
+
+      </div>
+
+      <!-- ユーザー一覧 -->
+      <div class="card">
+
+        <h2>👥 ユーザー管理</h2>
+
+        <button onclick="loadUsers()">
+          ユーザー一覧を更新
+        </button>
+
+        <div id="userList">
+          まだ読み込んでいません。
+        </div>
+
+      </div>
+
+      <!-- 商品作成 -->
+      <div class="card">
+
+        <h2>📦 商品管理</h2>
+
+        <input
+          id="productName"
+          placeholder="商品名"
+        >
+
+        <input
+          id="productPrice"
+          type="number"
+          placeholder="価格（メダル）"
+        >
+
+        <input
+          id="productImage"
+          placeholder="商品画像URL（任意）"
+        >
+
+        <button
+          class="green"
+          onclick="createProduct()"
+        >
+          商品を登録
+        </button>
+
+        <div id="productAdminStatus" class="status">
+          商品情報を入力してください。
+        </div>
+
+      </div>
+
+    </section>
+
+  </section>
+
+</div>
+
+<script>
+
+/* ==========================================
+   Supabase設定
+========================================== */
+
+const SUPABASE_URL =
+  "https://kizcfsgfeurwlpwcfrzp.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_onwTGaCaOPH3LerDm0tXOA_KnjyS2hG";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
   );
-$$;
-
-grant execute on function public.is_admin() to authenticated;
 
 
--- =========================================
--- 商品作成
--- =========================================
-create or replace function public.admin_create_product(
-  product_name text,
-  product_description text,
-  product_price integer,
-  product_stock integer,
-  product_image_url text default null
-)
-returns uuid
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  new_id uuid;
-begin
-  if not public.is_admin() then
-    raise exception '管理者権限がありません';
-  end if;
+/* ==========================================
+   状態
+========================================== */
 
-  if product_name is null or trim(product_name) = '' then
-    raise exception '商品名を入力してください';
-  end if;
-
-  if product_price < 0 or product_stock < 0 then
-    raise exception '価格・在庫は0以上にしてください';
-  end if;
-
-  insert into public.shop_products (
-    name,
-    description,
-    price_medals,
-    stock,
-    image_url,
-    enabled
-  )
-  values (
-    trim(product_name),
-    product_description,
-    product_price,
-    product_stock,
-    product_image_url,
-    true
-  )
-  returning id into new_id;
-
-  return new_id;
-end;
-$$;
-
-grant execute on function public.admin_create_product(
-  text,text,integer,integer,text
-) to authenticated;
+let currentUser = null;
+let currentProfile = null;
 
 
--- =========================================
--- 商品更新
--- =========================================
-create or replace function public.admin_update_product(
-  target_product_id uuid,
-  product_name text,
-  product_description text,
-  product_price integer,
-  product_stock integer,
-  product_image_url text,
-  product_enabled boolean
-)
-returns boolean
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  if not public.is_admin() then
-    raise exception '管理者権限がありません';
-  end if;
+/* ==========================================
+   起動
+========================================== */
 
-  update public.shop_products
-  set
-    name = trim(product_name),
-    description = product_description,
-    price_medals = product_price,
-    stock = product_stock,
-    image_url = product_image_url,
-    enabled = product_enabled
-  where id = target_product_id;
+window.addEventListener("load", async () => {
 
-  if not found then
-    raise exception '商品が見つかりません';
-  end if;
+  const {
+    data:{session}
+  } = await supabaseClient.auth.getSession();
 
-  return true;
-end;
-$$;
+  if(session){
 
-grant execute on function public.admin_update_product(
-  uuid,text,text,integer,integer,text,boolean
-) to authenticated;
+    currentUser = session.user;
+
+    await loadProfile();
+
+  }
+
+});
 
 
--- =========================================
--- ギフトコード作成
--- =========================================
-create or replace function public.admin_create_gift_code(
-  gift_code text,
-  gift_medals integer,
-  gift_max_uses integer,
-  gift_expires_at timestamptz default null
-)
-returns uuid
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  new_id uuid;
-begin
-  if not public.is_admin() then
-    raise exception '管理者権限がありません';
-  end if;
+/* ==========================================
+   ログイン
+========================================== */
 
-  if gift_code is null or trim(gift_code) = '' then
-    raise exception 'ギフトコードを入力してください';
-  end if;
+async function login(){
 
-  if gift_medals <= 0 then
-    raise exception 'メダル数は1以上にしてください';
-  end if;
+  const email =
+    document.getElementById("email").value.trim();
 
-  if gift_max_uses <= 0 then
-    raise exception '使用回数は1以上にしてください';
-  end if;
+  const password =
+    document.getElementById("password").value;
 
-  insert into public.gift_codes (
-    code,
-    medal_amount,
-    max_uses,
-    used_count,
-    expires_at,
-    enabled
-  )
-  values (
-    upper(trim(gift_code)),
-    gift_medals,
-    gift_max_uses,
-    0,
-    gift_expires_at,
-    true
-  )
-  returning id into new_id;
+  if(!email || !password){
 
-  return new_id;
-end;
-$$;
+    setLoginStatus(
+      "メールアドレスとパスワードを入力してください。"
+    );
 
-grant execute on function public.admin_create_gift_code(
-  text,integer,integer,timestamptz
-) to authenticated;
+    return;
+  }
+
+  setLoginStatus("ログイン中……");
+
+  const {
+    data,
+    error
+  } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+
+    setLoginStatus(
+      "ログイン失敗：" + error.message
+    );
+
+    return;
+  }
+
+  currentUser = data.user;
+
+  await loadProfile();
+
+}
 
 
--- =========================================
--- ギフトコード有効・無効
--- =========================================
-create or replace function public.admin_update_gift_code(
-  target_gift_id uuid,
-  gift_enabled boolean
-)
-returns boolean
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  if not public.is_admin() then
-    raise exception '管理者権限がありません';
-  end if;
+/* ==========================================
+   新規登録
+========================================== */
 
-  update public.gift_codes
-  set enabled = gift_enabled
-  where id = target_gift_id;
+async function signup(){
 
-  if not found then
-    raise exception 'ギフトコードが見つかりません';
-  end if;
+  const email =
+    document.getElementById("email").value.trim();
 
-  return true;
-end;
-$$;
+  const password =
+    document.getElementById("password").value;
 
-grant execute on function public.admin_update_gift_code(
-  uuid,boolean
-) to authenticated;
+  if(!email || !password){
 
+    setLoginStatus(
+      "メールアドレスとパスワードを入力してください。"
+    );
 
--- =========================================
--- クレーンゲーム台作成
--- =========================================
-create or replace function public.admin_create_crane_machine(
-  machine_name text,
-  machine_prize_name text,
-  machine_arm_power integer,
-  machine_stock integer
-)
-returns uuid
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  new_id uuid;
-begin
-  if not public.is_admin() then
-    raise exception '管理者権限がありません';
-  end if;
+    return;
+  }
 
-  if machine_name is null or trim(machine_name) = '' then
-    raise exception '台名を入力してください';
-  end if;
+  const {
+    data,
+    error
+  } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
 
-  if machine_prize_name is null or trim(machine_prize_name) = '' then
-    raise exception '景品名を入力してください';
-  end if;
+  if(error){
 
-  if machine_arm_power < 0 or machine_arm_power > 100 then
-    raise exception 'アームパワーは0〜100で設定してください';
-  end if;
+    setLoginStatus(
+      "登録失敗：" + error.message
+    );
 
-  if machine_stock < 0 then
-    raise exception '在庫は0以上にしてください';
-  end if;
+    return;
+  }
 
-  insert into public.crane_machines (
-    name,
-    prize_name,
-    arm_power,
-    stock,
-    enabled
-  )
-  values (
-    trim(machine_name),
-    trim(machine_prize_name),
-    machine_arm_power,
-    machine_stock,
-    true
-  )
-  returning id into new_id;
+  setLoginStatus(
+    "登録しました。メール確認が必要な設定の場合は、メールを確認してください。"
+  );
 
-  return new_id;
-end;
-$$;
-
-grant execute on function public.admin_create_crane_machine(
-  text,text,integer,integer
-) to authenticated;
+}
 
 
--- =========================================
--- クレーンゲーム台更新
--- =========================================
-create or replace function public.admin_update_crane_machine(
-  target_machine_id uuid,
-  machine_name text,
-  machine_prize_name text,
-  machine_arm_power integer,
-  machine_stock integer,
-  machine_enabled boolean
-)
-returns boolean
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  if not public.is_admin() then
-    raise exception '管理者権限がありません';
-  end if;
+/* ==========================================
+   プロフィール
+========================================== */
 
-  if machine_arm_power < 0 or machine_arm_power > 100 then
-    raise exception 'アームパワーは0〜100で設定してください';
-  end if;
+async function loadProfile(){
 
-  update public.crane_machines
-  set
-    name = trim(machine_name),
-    prize_name = trim(machine_prize_name),
-    arm_power = machine_arm_power,
-    stock = machine_stock,
-    enabled = machine_enabled
-  where id = target_machine_id;
+  if(!currentUser) return;
 
-  if not found then
-    raise exception 'クレーンゲーム台が見つかりません';
-  end if;
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id", currentUser.id)
+    .single();
 
-  return true;
-end;
-$$;
+  if(error){
 
-grant execute on function public.admin_update_crane_machine(
-  uuid,text,text,integer,integer,boolean
-) to authenticated;
+    console.error(error);
+
+    setLoginStatus(
+      "プロフィールを取得できませんでした。"
+    );
+
+    return;
+  }
+
+  currentProfile = data;
+
+  document
+    .getElementById("loginSection")
+    .classList.add("hidden");
+
+  document
+    .getElementById("mainSection")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("displayName")
+    .textContent =
+      data.display_name ||
+      data.username ||
+      currentUser.email;
+
+  document
+    .getElementById("role")
+    .textContent =
+      data.role || "user";
+
+  document
+    .getElementById("medals")
+    .textContent =
+      Number(data.medals || 0).toLocaleString();
+
+  /* 管理者判定 */
+
+  const adminRoles = [
+    "admin",
+    "manager",
+    "master",
+    "owner"
+  ];
+
+  if(
+    adminRoles.includes(
+      String(data.role || "").toLowerCase()
+    )
+  ){
+
+    document
+      .getElementById("adminSection")
+      .classList.remove("hidden");
+
+    loadUsers();
+
+  }
+
+  loadProducts();
+
+}
+
+
+/* ==========================================
+   ログアウト
+========================================== */
+
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  location.reload();
+
+}
+
+
+/* ==========================================
+   メダル遠隔変更
+========================================== */
+
+async function changeMedals(){
+
+  const targetUserId =
+    document
+      .getElementById("targetUser")
+      .value
+      .trim();
+
+  const amount =
+    Number(
+      document
+        .getElementById("medalAmount")
+        .value
+    );
+
+  const reason =
+    document
+      .getElementById("medalReason")
+      .value
+      .trim() ||
+      "管理者によるメダル変更";
+
+  if(!targetUserId){
+
+    setMedalAdminStatus(
+      "対象ユーザーのUUIDを入力してください。"
+    );
+
+    return;
+  }
+
+  if(!Number.isInteger(amount) || amount === 0){
+
+    setMedalAdminStatus(
+      "増減枚数には0以外の整数を入力してください。"
+    );
+
+    return;
+  }
+
+  setMedalAdminStatus(
+    "メダルを変更しています……"
+  );
+
+  const {
+    data,
+    error
+  } = await supabaseClient.rpc(
+    "admin_change_medals",
+    {
+      target_user_id: targetUserId,
+      medal_amount: amount,
+      reason: reason
+    }
+  );
+
+  if(error){
+
+    console.error(error);
+
+    setMedalAdminStatus(
+      "変更失敗：" + error.message
+    );
+
+    return;
+  }
+
+  setMedalAdminStatus(
+    "成功しました。変更後メダル：" +
+    Number(data).toLocaleString() +
+    "枚"
+  );
+
+  await loadUsers();
+
+  if(targetUserId === currentUser.id){
+
+    await loadProfile();
+
+  }
+
+}
+
+
+/* ==========================================
+   ユーザー一覧
+========================================== */
+
+async function loadUsers(){
+
+  const list =
+    document.getElementById("userList");
+
+  list.innerHTML =
+    "読み込み中……";
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("profiles")
+    .select(
+      "id,username,display_name,role,medals"
+    )
+    .order("display_name");
+
+  if(error){
+
+    console.error(error);
+
+    list.innerHTML =
+      "ユーザー取得失敗：" +
+      error.message;
+
+    return;
+  }
+
+  if(!data || data.length === 0){
+
+    list.innerHTML =
+      "ユーザーがありません。";
+
+    return;
+  }
+
+  list.innerHTML = "";
+
+  data.forEach(user => {
+
+    const div =
+      document.createElement("div");
+
+    div.className = "user";
+
+    div.innerHTML = `
+      <strong>
+        ${escapeHtml(
+          user.display_name ||
+          user.username ||
+          "名前なし"
+        )}
+      </strong>
+
+      <div class="small">
+        ID：${escapeHtml(user.id)}
+      </div>
+
+      <div>
+        権限：
+        ${escapeHtml(user.role || "user")}
+      </div>
+
+      <div>
+        🪙
+        ${Number(user.medals || 0).toLocaleString()}
+        枚
+      </div>
+
+      <button
+        class="gray"
+        onclick="selectUser('${user.id}')"
+      >
+        このユーザーを選択
+      </button>
+    `;
+
+    list.appendChild(div);
+
+  });
+
+}
+
+
+/* ==========================================
+   ユーザー選択
+========================================== */
+
+function selectUser(id){
+
+  document
+    .getElementById("targetUser")
+    .value = id;
+
+  window.scrollTo({
+    top:
+      document
+        .getElementById("targetUser")
+        .getBoundingClientRect()
+        .top +
+      window.scrollY -
+      120,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* ==========================================
+   商品一覧
+========================================== */
+
+async function loadProducts(){
+
+  const list =
+    document.getElementById("productList");
+
+  try{
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("products")
+      .select("*")
+      .order("created_at",{
+        ascending:false
+      });
+
+    if(error){
+
+      list.innerHTML =
+        "商品を読み込めませんでした。";
+
+      console.error(error);
+
+      return;
+    }
+
+    if(!data || data.length === 0){
+
+      list.innerHTML =
+        "現在、商品はありません。";
+
+      return;
+    }
+
+    list.innerHTML = "";
+
+    data.forEach(product => {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "product";
+
+      div.innerHTML = `
+        <div>
+          <strong>
+            ${escapeHtml(product.name || "商品")}
+          </strong>
+
+          <div class="small">
+            ${Number(
+              product.price || 0
+            ).toLocaleString()} メダル
+          </div>
+        </div>
+
+        <button
+          onclick="buyProduct('${product.id}')"
+        >
+          交換
+        </button>
+      `;
+
+      list.appendChild(div);
+
+    });
+
+  }catch(e){
+
+    console.error(e);
+
+    list.innerHTML =
+      "商品を読み込めませんでした。";
+
+  }
+
+}
+
+
+/* ==========================================
+   商品登録
+========================================== */
+
+async function createProduct(){
+
+  const name =
+    document
+      .getElementById("productName")
+      .value
+      .trim();
+
+  const price =
+    Number(
+      document
+        .getElementById("productPrice")
+        .value
+    );
+
+  const image =
+    document
+      .getElementById("productImage")
+      .value
+      .trim();
+
+  if(!name){
+
+    setProductAdminStatus(
+      "商品名を入力してください。"
+    );
+
+    return;
+  }
+
+  if(!Number.isInteger(price) || price < 0){
+
+    setProductAdminStatus(
+      "価格を正しく入力してください。"
+    );
+
+    return;
+  }
+
+  const {
+    error
+  } = await supabaseClient
+    .from("products")
+    .insert({
+      name:name,
+      price:price,
+      image_url:image || null
+    });
+
+  if(error){
+
+    console.error(error);
+
+    setProductAdminStatus(
+      "商品登録失敗：" +
+      error.message
+    );
+
+    return;
+  }
+
+  setProductAdminStatus(
+    "商品を登録しました。"
+  );
+
+  document
+    .getElementById("productName")
+    .value = "";
+
+  document
+    .getElementById("productPrice")
+    .value = "";
+
+  document
+    .getElementById("productImage")
+    .value = "";
+
+  loadProducts();
+
+}
+
+
+/* ==========================================
+   商品交換
+========================================== */
+
+async function buyProduct(id){
+
+  alert(
+    "商品交換機能は次の段階で安全な決済RPCを接続します。"
+  );
+
+}
+
+
+/* ==========================================
+   ゲーム
+========================================== */
+
+function startMedalGame(){
+
+  document
+    .getElementById("gameMessage")
+    .textContent =
+      "🎰 メダルプッシャーを準備中……";
+
+}
+
+function startCraneGame(){
+
+  document
+    .getElementById("gameMessage")
+    .textContent =
+      "🕹️ 物理演算クレーンゲームを準備中……";
+
+}
+
+
+/* ==========================================
+   表示補助
+========================================== */
+
+function setLoginStatus(text){
+
+  document
+    .getElementById("loginStatus")
+    .textContent = text;
+
+}
+
+function setMedalAdminStatus(text){
+
+  document
+    .getElementById("medalAdminStatus")
+    .textContent = text;
+
+}
+
+function setProductAdminStatus(text){
+
+  document
+    .getElementById("productAdminStatus")
+    .textContent = text;
+
+}
+
+function escapeHtml(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* ==========================================
+   認証状態監視
+========================================== */
+
+supabaseClient.auth.onAuthStateChange(
+  async (event,session) => {
+
+    if(session){
+
+      currentUser = session.user;
+
+    }else{
+
+      currentUser = null;
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
+```
