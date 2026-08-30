@@ -907,26 +907,120 @@ function rollDice(){
    ショップ
 ===================================== */
 
-function openShop(){
+function openShop(){<script>
+async function openShop(){
 
- hideAllPages();
+  hideAllPages();
 
- document
- .getElementById("shopPage")
- .classList.remove("hidden");
+  document
+    .getElementById("shopPage")
+    .classList.remove("hidden");
 
- document
- .getElementById("shopItems")
- .innerHTML=`
-  <div class="game">
-   <h2>🎁 テスト景品</h2>
-   <p>1000メダル</p>
-   <button>
-    購入
-   </button>
-  </div>
- `;
+  document
+    .getElementById("shopItems")
+    .innerHTML = `
+      <div class="game">
+        <h2>🎁 テスト景品</h2>
+
+        <p>価格：🪙 1000枚</p>
+
+        <button
+          type="button"
+          onclick="purchaseProduct(
+            'test-prize-001',
+            'テスト景品',
+            1000
+          )">
+          🛒 購入する
+        </button>
+
+        <div
+          id="purchaseMessage"
+          class="success">
+        </div>
+      </div>
+    `;
 }
+
+
+async function purchaseProduct(
+  productId,
+  productName,
+  price
+){
+
+  const message =
+    document.getElementById("purchaseMessage");
+
+  if(!currentUser || !currentProfile){
+
+    message.textContent =
+      "🔐 ログインしてください。";
+
+    return;
+  }
+
+  if(currentProfile.medals < price){
+
+    message.textContent =
+      "❌ メダルが足りません。";
+
+    return;
+  }
+
+  const ok = confirm(
+    "「" + productName + "」を購入しますか？\n\n" +
+    "価格：🪙 " + price + "枚\n" +
+    "購入後：🪙 " +
+    (currentProfile.medals - price) +
+    "枚"
+  );
+
+  if(!ok){
+    return;
+  }
+
+  message.textContent =
+    "⏳ 購入処理中……";
+
+  const {data,error} =
+    await supabaseClient.rpc(
+      "purchase_product",
+      {
+        p_product_id: productId,
+        p_product_name: productName,
+        p_price: price
+      }
+    );
+
+  if(error){
+
+    console.error(error);
+
+    message.textContent =
+      "❌ 購入できませんでした。\n" +
+      error.message;
+
+    return;
+  }
+
+  currentProfile.medals =
+    Number(data);
+
+  document.getElementById(
+    "medalCount"
+  ).textContent =
+    currentProfile.medals;
+
+  message.textContent =
+    "🎉 購入完了！\n" +
+    "「" + productName +
+    "」を購入しました。\n" +
+    "残高：🪙 " +
+    currentProfile.medals +
+    "枚";
+}
+</script>}
 
 
 /* =====================================
