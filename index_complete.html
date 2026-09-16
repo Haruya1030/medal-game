@@ -146,8 +146,11 @@ table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px so
 <div id="modal" class="modal hidden"><div class="modal-box"><div id="modalContent"></div><button onclick="closeModal()">閉じる</button></div></div>
 
 <script>
-const SUPABASE_URL="https://kizcfsgfeurwlpwcfrzp.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_onwTGaCaOPH3LerDm0tXOA_KnjyS2hG";
+const SUPABASE_URL=
+"https://kizcfsgfeurwlpwcfrzp.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY=
+"sb_publishable_onwTGaCaOPH3LerDm0tXOA_KnjyS2hG";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:window.localStorage}});
 let currentUser=null,currentProfile=null,deferredInstallPrompt=null;
 let machines=[{id:1,name:"クレーン台 01",prize:"🎁",power:35},{id:2,name:"クレーン台 02",prize:"🧸",power:40},{id:3,name:"クレーン台 03",prize:"🐻",power:45},{id:4,name:"クレーン台 04",prize:"🎮",power:30},{id:5,name:"クレーン台 05",prize:"🍭",power:50},{id:6,name:"クレーン台 06",prize:"⭐",power:38},{id:7,name:"クレーン台 07",prize:"🐱",power:42},{id:8,name:"クレーン台 08",prize:"🎀",power:36},{id:9,name:"クレーン台 09",prize:"🏆",power:48}];
